@@ -1,6 +1,30 @@
-node_modules
-dist
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.output/
+.vinxi/
+.tanstack/
+.nitro/
+
+# Cloudflare / Wrangler
+.wrangler/
+.dev.vars
+
+# Environment files
 .env
 .env.local
-*.zip
-.workspace
+*.local
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
