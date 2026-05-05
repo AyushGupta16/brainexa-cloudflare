@@ -109,7 +109,7 @@ function LoginPage() {
                   <Input
                     id={`email-${r}`}
                     type="email"
-                    placeholder="your@email.com"
+                    placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />

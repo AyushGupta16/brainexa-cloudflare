@@ -96,7 +96,7 @@ function RegisterPage() {
           <div className="space-y-2">
             <Label>Full Name</Label>
             <Input
-              placeholder="Aman Kumar"
+              placeholder="Enter your full name"
               value={form.name}
               onChange={f("name")}
             />
@@ -105,7 +105,7 @@ function RegisterPage() {
             <Label>Email</Label>
             <Input
               type="email"
-              placeholder="you@email.com"
+              placeholder="Enter your email address"
               value={form.email}
               onChange={f("email")}
             />
@@ -114,7 +114,7 @@ function RegisterPage() {
             <Label>Phone</Label>
             <Input
               type="tel"
-              placeholder="9876543210"
+              placeholder="Enter your phone number"
               value={form.phone}
               onChange={f("phone")}
             />
@@ -123,7 +123,7 @@ function RegisterPage() {
             <Label>Password</Label>
             <Input
               type="password"
-              placeholder="Min 6 characters"
+              placeholder="Enter your password (Min 6 characters)"
               value={form.password}
               onChange={f("password")}
             />
