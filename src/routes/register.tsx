@@ -23,11 +23,18 @@ function RegisterPage() {
     phone: "",
     password: "",
     referralCode: "",
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    referralCode: "",
   });
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const f =
+    (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
   const f =
     (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -48,6 +55,7 @@ function RegisterPage() {
         form.phone,
         form.password,
         form.referralCode || undefined,
+        form.referralCode || undefined,
       );
 
       if (!result.ok) {
@@ -59,10 +67,15 @@ function RegisterPage() {
         setNotice(
           "Account created. Please check your email to confirm your account, then sign in.",
         );
+        setNotice(
+          "Account created. Please check your email to confirm your account, then sign in.",
+        );
       }
 
       navigate({ to: "/login" });
     } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Registration failed.";
       const message =
         err instanceof Error ? err.message : "Registration failed.";
       setError(message);
@@ -84,6 +97,10 @@ function RegisterPage() {
             to="/login"
             className="text-xs text-muted-foreground hover:text-primary"
           >
+          <Link
+            to="/login"
+            className="text-xs text-muted-foreground hover:text-primary"
+          >
             ← Back to Login
           </Link>
           <div className="flex items-center gap-4">
@@ -100,12 +117,23 @@ function RegisterPage() {
               value={form.name}
               onChange={f("name")}
             />
+            <Input
+              placeholder="Enter your full name"
+              value={form.name}
+              onChange={f("name")}
+            />
           </div>
           <div className="space-y-2">
             <Label>Email</Label>
             <Input
               type="email"
               placeholder="you@email.com"
+              value={form.email}
+              onChange={f("email")}
+            />
+            <Input
+              type="email"
+              placeholder="Enter your email address"
               value={form.email}
               onChange={f("email")}
             />
@@ -118,6 +146,12 @@ function RegisterPage() {
               value={form.phone}
               onChange={f("phone")}
             />
+            <Input
+              type="tel"
+              placeholder="Enter your phone number"
+              value={form.phone}
+              onChange={f("phone")}
+            />
           </div>
           <div className="space-y-2">
             <Label>Password</Label>
@@ -127,8 +161,23 @@ function RegisterPage() {
               value={form.password}
               onChange={f("password")}
             />
+            <Input
+              type="password"
+              placeholder="Enter your password (Min 6 characters)"
+              value={form.password}
+              onChange={f("password")}
+            />
           </div>
           <div className="space-y-2">
+            <Label>
+              Referral Code{" "}
+              <span className="text-muted-foreground">(optional)</span>
+            </Label>
+            <Input
+              placeholder="e.g. ABC12345"
+              value={form.referralCode}
+              onChange={f("referralCode")}
+            />
             <Label>
               Referral Code{" "}
               <span className="text-muted-foreground">(optional)</span>
@@ -148,11 +197,19 @@ function RegisterPage() {
             onClick={handleRegister}
             disabled={loading}
           >
+          <Button
+            className="w-full"
+            onClick={handleRegister}
+            disabled={loading}
+          >
             {loading ? "Creating account..." : "Create Account"}
           </Button>
 
           <p className="text-sm text-center text-muted-foreground pt-1">
             Already have an account?{" "}
+            <Link to="/login" className="text-primary underline">
+              Sign in →
+            </Link>
             <Link to="/login" className="text-primary underline">
               Sign in →
             </Link>
