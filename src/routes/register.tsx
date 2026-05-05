@@ -95,19 +95,38 @@ function RegisterPage() {
         <CardContent className="space-y-3">
           <div className="space-y-2">
             <Label>Full Name</Label>
-            <Input placeholder="Aman Kumar" value={form.name} onChange={f("name")} />
+            <Input
+              placeholder="Aman Kumar"
+              value={form.name}
+              onChange={f("name")}
+            />
           </div>
           <div className="space-y-2">
             <Label>Email</Label>
-            <Input type="email" placeholder="you@email.com" value={form.email} onChange={f("email")} />
+            <Input
+              type="email"
+              placeholder="you@email.com"
+              value={form.email}
+              onChange={f("email")}
+            />
           </div>
           <div className="space-y-2">
             <Label>Phone</Label>
-            <Input type="tel" placeholder="9876543210" value={form.phone} onChange={f("phone")} />
+            <Input
+              type="tel"
+              placeholder="9876543210"
+              value={form.phone}
+              onChange={f("phone")}
+            />
           </div>
           <div className="space-y-2">
             <Label>Password</Label>
-            <Input type="password" placeholder="Min 6 characters" value={form.password} onChange={f("password")} />
+            <Input
+              type="password"
+              placeholder="Min 6 characters"
+              value={form.password}
+              onChange={f("password")}
+            />
           </div>
           <div className="space-y-2">
             <Label>

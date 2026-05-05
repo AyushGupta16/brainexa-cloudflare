@@ -2,22 +2,67 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Navbar } from "@/components/brainexa/Navbar";
 import { Footer } from "@/components/brainexa/Footer";
 import { SectionHeading } from "@/components/brainexa/SectionHeading";
-import { Mail, MessageCircle, Send } from "lucide-react";
+// import { Mail, MessageCircle, Send } from "lucide-react";
+import { Mail, Send } from "lucide-react";
+import {
+  FaYoutube,
+  FaInstagram,
+  FaFacebook,
+  FaWhatsapp,
+} from "react-icons/fa6";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact Brainexa" },
-      { name: "description", content: "Get in touch with the Brainexa team for course, payment or doubt support." },
+      {
+        name: "description",
+        content:
+          "Get in touch with the Brainexa team for course, payment or doubt support.",
+      },
     ],
   }),
   component: ContactPage,
 });
 
 const CONTACTS = [
-  { icon: Mail, label: "Email", value: "support@brainexa.in", href: "mailto:support@brainexa.in" },
-  { icon: MessageCircle, label: "WhatsApp Group", value: "Join community", href: "https://chat.whatsapp.com/GsimlmjDJli0COBP9852Er" },
-  { icon: Send, label: "Telegram", value: "@BRAINEXA", href: "https://t.me/BRAINEXA" },
+  {
+    icon: Mail,
+    label: "Email",
+    value: "support@brainexa.in",
+    href: "mailto:support@brainexa.in",
+  },
+  {
+    // icon: MessageCircle,
+    icon: FaWhatsapp,
+    label: "WhatsApp",
+    value: "Join WhatsApp Group",
+    href: "https://chat.whatsapp.com/GsimlmjDJli0COBP9852Er?mode=gi_t",
+  },
+  {
+    icon: Send,
+    label: "Telegram",
+    value: "Join Telegram Channel",
+    href: "https://t.me/BRAINEXA",
+  },
+  {
+    icon: FaYoutube,
+    label: "YouTube",
+    value: "@brainexaofficial34",
+    href: "https://youtube.com/@brainexaofficial34",
+  },
+  {
+    icon: FaInstagram,
+    label: "Instagram",
+    value: "@sanjeevgupta34v",
+    href: "https://www.instagram.com/sanjeevgupta34v",
+  },
+  {
+    icon: FaFacebook,
+    label: "Facebook",
+    value: "Follow Brainexa",
+    href: "https://www.facebook.com/share/1HdHGUvTW4/",
+  },
 ];
 
 function ContactPage() {
@@ -30,7 +75,7 @@ function ContactPage() {
           title="Contact Us"
           subtitle="We're here to help — reach out anytime."
         />
-        <div className="mt-10 grid gap-4 sm:grid-cols-3">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {CONTACTS.map((c) => (
             <a
               key={c.label}
@@ -43,8 +88,12 @@ function ContactPage() {
                 <c.icon className="h-5 w-5" />
               </span>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{c.label}</p>
-                <p className="mt-1 text-base font-bold text-foreground">{c.value}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {c.label}
+                </p>
+                <p className="mt-1 text-base font-bold text-foreground">
+                  {c.value}
+                </p>
               </div>
             </a>
           ))}

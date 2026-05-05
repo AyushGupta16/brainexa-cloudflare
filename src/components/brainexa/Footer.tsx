@@ -1,5 +1,10 @@
-import { Send, MessageCircle } from "lucide-react";
-import { FaInstagram, FaYoutube, FaFacebook } from "react-icons/fa6";
+import { Send, MessageCircle, Mail } from "lucide-react";
+import {
+  FaWhatsapp,
+  FaInstagram,
+  FaYoutube,
+  FaFacebook,
+} from "react-icons/fa6";
 import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/brainexa/Logo";
 
@@ -21,8 +26,13 @@ const LEGAL: { to: "/privacy" | "/terms" | "/refund"; label: string }[] = [
 
 const SOCIALS = [
   {
+    label: "Email",
+    icon: Mail,
+    href: "mailto:support@brainexa.in",
+  },
+  {
     label: "WhatsApp",
-    icon: MessageCircle,
+    icon: FaWhatsapp,
     href: "https://chat.whatsapp.com/GsimlmjDJli0COBP9852Er?mode=gi_t",
   },
   {
