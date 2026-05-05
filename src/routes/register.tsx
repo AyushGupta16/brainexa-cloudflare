@@ -18,14 +18,18 @@ function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "", email: "", phone: "", password: "", referralCode: "",
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    referralCode: "",
   });
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const f = (field: keyof typeof form) =>
-    (e: React.ChangeEvent<HTMLInputElement>) =>
+  const f =
+    (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
   const handleRegister = async () => {
@@ -43,7 +47,7 @@ function RegisterPage() {
         form.email,
         form.phone,
         form.password,
-        form.referralCode || undefined
+        form.referralCode || undefined,
       );
 
       if (!result.ok) {
@@ -52,12 +56,15 @@ function RegisterPage() {
       }
 
       if (result.needsEmailConfirmation) {
-        setNotice("Account created. Please check your email to confirm your account, then sign in.");
+        setNotice(
+          "Account created. Please check your email to confirm your account, then sign in.",
+        );
       }
 
       navigate({ to: "/login" });
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Registration failed.";
+      const message =
+        err instanceof Error ? err.message : "Registration failed.";
       setError(message);
     } finally {
       setLoading(false);
@@ -73,7 +80,10 @@ function RegisterPage() {
 
       <Card className="w-full max-w-md shadow-elevated">
         <CardHeader className="space-y-3">
-          <Link to="/login" className="text-xs text-muted-foreground hover:text-primary">
+          <Link
+            to="/login"
+            className="text-xs text-muted-foreground hover:text-primary"
+          >
             ← Back to Login
           </Link>
           <div className="flex items-center gap-4">
@@ -85,35 +95,67 @@ function RegisterPage() {
         <CardContent className="space-y-3">
           <div className="space-y-2">
             <Label>Full Name</Label>
-            <Input placeholder="Aman Kumar" value={form.name} onChange={f("name")} />
+            <Input
+              placeholder="Aman Kumar"
+              value={form.name}
+              onChange={f("name")}
+            />
           </div>
           <div className="space-y-2">
             <Label>Email</Label>
-            <Input type="email" placeholder="you@email.com" value={form.email} onChange={f("email")} />
+            <Input
+              type="email"
+              placeholder="you@email.com"
+              value={form.email}
+              onChange={f("email")}
+            />
           </div>
           <div className="space-y-2">
             <Label>Phone</Label>
-            <Input type="tel" placeholder="9876543210" value={form.phone} onChange={f("phone")} />
+            <Input
+              type="tel"
+              placeholder="9876543210"
+              value={form.phone}
+              onChange={f("phone")}
+            />
           </div>
           <div className="space-y-2">
             <Label>Password</Label>
-            <Input type="password" placeholder="Min 6 characters" value={form.password} onChange={f("password")} />
+            <Input
+              type="password"
+              placeholder="Min 6 characters"
+              value={form.password}
+              onChange={f("password")}
+            />
           </div>
           <div className="space-y-2">
-            <Label>Referral Code <span className="text-muted-foreground">(optional)</span></Label>
-            <Input placeholder="e.g. ABC12345" value={form.referralCode} onChange={f("referralCode")} />
+            <Label>
+              Referral Code{" "}
+              <span className="text-muted-foreground">(optional)</span>
+            </Label>
+            <Input
+              placeholder="e.g. ABC12345"
+              value={form.referralCode}
+              onChange={f("referralCode")}
+            />
           </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
           {notice && <p className="text-sm text-emerald-600">{notice}</p>}
 
-          <Button className="w-full" onClick={handleRegister} disabled={loading}>
+          <Button
+            className="w-full"
+            onClick={handleRegister}
+            disabled={loading}
+          >
             {loading ? "Creating account..." : "Create Account"}
           </Button>
 
           <p className="text-sm text-center text-muted-foreground pt-1">
             Already have an account?{" "}
-            <Link to="/login" className="text-primary underline">Sign in →</Link>
+            <Link to="/login" className="text-primary underline">
+              Sign in →
+            </Link>
           </p>
         </CardContent>
       </Card>
