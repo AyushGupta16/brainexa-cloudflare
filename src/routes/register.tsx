@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BrainCircuit } from "lucide-react";
+import { Logo } from "@/components/brainexa/Logo";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
@@ -76,10 +76,8 @@ function RegisterPage() {
           <Link to="/login" className="text-xs text-muted-foreground hover:text-primary">
             ← Back to Login
           </Link>
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary shadow-soft">
-              <BrainCircuit className="h-5 w-5 text-primary-foreground" />
-            </span>
+          <div className="flex items-center gap-4">
+            <Logo size="xl" />
             <CardTitle className="text-2xl">Create your account</CardTitle>
           </div>
         </CardHeader>

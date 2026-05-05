@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { BrainCircuit, GraduationCap, Shield, Users } from "lucide-react";
+import { GraduationCap, Shield, Users } from "lucide-react";
+import { Logo } from "@/components/brainexa/Logo";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -68,10 +69,8 @@ function LoginPage() {
           <Link to="/" className="text-xs text-muted-foreground hover:text-primary">
             ← Back to Brainexa
           </Link>
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary shadow-soft">
-              <BrainCircuit className="h-5 w-5 text-primary-foreground" />
-            </span>
+          <div className="flex items-center gap-4">
+            <Logo size="xl" />
             <CardTitle className="text-2xl">Sign in to Brainexa</CardTitle>
           </div>
         </CardHeader>

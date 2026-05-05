@@ -1,7 +1,12 @@
-import { BrainCircuit, Youtube, Instagram, Facebook, Send, MessageCircle } from "lucide-react";
+import { Send, MessageCircle } from "lucide-react";
+import { FaInstagram, FaYoutube, FaFacebook } from "react-icons/fa6";
 import { Link } from "@tanstack/react-router";
+import { Logo } from "@/components/brainexa/Logo";
 
-const QUICK_LINKS: { to: "/" | "/courses" | "/about" | "/faq" | "/contact"; label: string }[] = [
+const QUICK_LINKS: {
+  to: "/" | "/courses" | "/about" | "/faq" | "/contact";
+  label: string;
+}[] = [
   { to: "/courses", label: "Courses" },
   { to: "/about", label: "About Us" },
   { to: "/faq", label: "FAQ" },
@@ -15,11 +20,31 @@ const LEGAL: { to: "/privacy" | "/terms" | "/refund"; label: string }[] = [
 ];
 
 const SOCIALS = [
-  { label: "WhatsApp", icon: MessageCircle, href: "https://chat.whatsapp.com/GsimlmjDJli0COBP9852Er" },
-  { label: "Telegram", icon: Send, href: "https://t.me/BRAINEXA" },
-  { label: "YouTube", icon: Youtube, href: "https://youtube.com/@brainexaofficial34" },
-  { label: "Instagram", icon: Instagram, href: "https://www.instagram.com/sanjeevgupta34v" },
-  { label: "Facebook", icon: Facebook, href: "https://www.facebook.com/share/1HdHGUvTW4/" },
+  {
+    label: "WhatsApp",
+    icon: MessageCircle,
+    href: "https://chat.whatsapp.com/GsimlmjDJli0COBP9852Er?mode=gi_t",
+  },
+  {
+    label: "Telegram",
+    icon: Send,
+    href: "https://t.me/BRAINEXA",
+  },
+  {
+    label: "YouTube",
+    icon: FaYoutube,
+    href: "https://youtube.com/@brainexaofficial34",
+  },
+  {
+    label: "Instagram",
+    icon: FaInstagram,
+    href: "https://www.instagram.com/sanjeevgupta34v",
+  },
+  {
+    label: "Facebook",
+    icon: FaFacebook,
+    href: "https://www.facebook.com/share/1HdHGUvTW4/",
+  },
 ];
 
 export function Footer() {
@@ -29,9 +54,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-2.5">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary">
-                <BrainCircuit className="h-5 w-5 text-primary-foreground" />
-              </span>
+              <Logo size="2xl" />
               <span className="flex flex-col leading-tight">
                 <span className="text-lg font-extrabold">BRAINEXA</span>
                 <span className="text-[10px] uppercase tracking-wider text-navy-foreground/60">
@@ -52,7 +75,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-navy-foreground/80 ring-1 ring-white/10 transition-colors hover:bg-white/10 hover:text-gold"
+                  className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 text-navy-foreground/80 ring-1 ring-white/10 transition-colors hover:bg-white/10 hover:text-gold"
                 >
                   <s.icon className="h-4 w-4" />
                 </a>

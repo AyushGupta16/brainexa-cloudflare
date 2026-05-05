@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { Menu, BrainCircuit } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/brainexa/Logo";
+
 import {
   Sheet,
   SheetContent,
@@ -10,10 +12,15 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
-const NAV_LINKS: { to: "/" | "/courses" | "/tests" | "/faq" | "/contact"; label: string; exact?: boolean }[] = [
+const NAV_LINKS: {
+  to: "/" | "/courses" | "/tests" | "/about" | "/faq" | "/contact";
+  label: string;
+  exact?: boolean;
+}[] = [
   { to: "/", label: "Home", exact: true },
   { to: "/courses", label: "Courses" },
   { to: "/tests", label: "Test Series" },
+  { to: "/about", label: "About Us" },
   { to: "/faq", label: "FAQ" },
   { to: "/contact", label: "Contact" },
 ];
@@ -40,9 +47,7 @@ export function Navbar() {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-primary shadow-soft">
-            <BrainCircuit className="h-5 w-5 text-primary-foreground" />
-          </span>
+          <Logo size="md" />
           <span className="flex flex-col leading-tight">
             <span className="text-base font-extrabold tracking-tight text-foreground sm:text-lg">
               BRAINEXA
@@ -94,9 +99,7 @@ export function Navbar() {
             <SheetTitle className="sr-only">Navigation</SheetTitle>
             <div className="flex h-full flex-col">
               <div className="flex items-center gap-2.5 border-b p-5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-primary">
-                  <BrainCircuit className="h-5 w-5 text-primary-foreground" />
-                </span>
+                <Logo size="lg" />
                 <div className="flex flex-col leading-tight">
                   <span className="text-base font-extrabold">BRAINEXA</span>
                   <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
