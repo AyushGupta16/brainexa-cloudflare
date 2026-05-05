@@ -48,8 +48,12 @@ function LoginPage() {
       }
     } catch (err: unknown) {
       let message = err instanceof Error ? err.message : "Login failed.";
-      if (typeof message === "string" && /email.*not.*confirmed/i.test(message)) {
-        message = "Please confirm your email from your inbox, then try signing in again.";
+      if (
+        typeof message === "string" &&
+        /email.*not.*confirmed/i.test(message)
+      ) {
+        message =
+          "Please confirm your email from your inbox, then try signing in again.";
       }
       setError(message);
     } finally {
@@ -66,7 +70,10 @@ function LoginPage() {
 
       <Card className="w-full max-w-md shadow-elevated">
         <CardHeader className="space-y-3">
-          <Link to="/" className="text-xs text-muted-foreground hover:text-primary">
+          <Link
+            to="/"
+            className="text-xs text-muted-foreground hover:text-primary"
+          >
             ← Back to Brainexa
           </Link>
           <div className="flex items-center gap-4">
@@ -78,10 +85,16 @@ function LoginPage() {
         <CardContent className="space-y-4">
           <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
             <TabsList className="grid grid-cols-3 w-full">
-              <TabsTrigger value="student" className="text-xs sm:text-sm gap-1.5">
+              <TabsTrigger
+                value="student"
+                className="text-xs sm:text-sm gap-1.5"
+              >
                 <GraduationCap className="h-4 w-4" /> Student
               </TabsTrigger>
-              <TabsTrigger value="teacher" className="text-xs sm:text-sm gap-1.5">
+              <TabsTrigger
+                value="teacher"
+                className="text-xs sm:text-sm gap-1.5"
+              >
                 <Users className="h-4 w-4" /> Teacher
               </TabsTrigger>
               <TabsTrigger value="admin" className="text-xs sm:text-sm gap-1.5">
@@ -113,9 +126,7 @@ function LoginPage() {
                   />
                 </div>
 
-                {error && (
-                  <p className="text-sm text-destructive">{error}</p>
-                )}
+                {error && <p className="text-sm text-destructive">{error}</p>}
 
                 <Button
                   className="w-full"
