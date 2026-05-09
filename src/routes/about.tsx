@@ -64,7 +64,7 @@ function AboutPage() {
       <main className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="About Us"
-          logo={<Logo size="lg" clickable={false} />}
+          logo={<Logo size="2xl" clickable={false} />}
           title="About BRAINEXA"
           subtitle="Shaping intelligent futures through concept-first learning."
         />
