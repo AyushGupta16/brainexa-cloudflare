@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import type { ReactNode } from "react";
 
 interface SectionHeadingProps {
   eyebrow?: string;
@@ -8,7 +7,6 @@ interface SectionHeadingProps {
   align?: "left" | "center";
   inverted?: boolean;
   className?: string;
-  logo?: ReactNode;
 }
 
 export function SectionHeading({
@@ -18,56 +16,40 @@ export function SectionHeading({
   align = "center",
   inverted = false,
   className,
-  logo,
 }: SectionHeadingProps) {
-  const isCenter = align === "center";
-
   return (
     <div
       className={cn(
-        "max-w-3xl transition-all duration-500 animate-in fade-in slide-in-from-bottom-4",
-        isCenter ? "mx-auto text-center" : "text-left",
+        "max-w-3xl",
+        align === "center" ? "mx-auto text-center" : "text-left",
         className,
       )}
     >
-      {/* EYEBROW */}
       {eyebrow && (
         <span
           className={cn(
             "inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider",
-            inverted ? "bg-gold/15 text-gold" : "bg-primary/10 text-primary",
+            inverted
+              ? "bg-gold/15 text-gold"
+              : "bg-primary/10 text-primary",
           )}
         >
           {eyebrow}
         </span>
       )}
-
-      {/* TITLE */}
-      <div
+      <h2
         className={cn(
-          "mt-4 flex items-center gap-3",
-          align === "center" ? "justify-center" : "justify-start",
+          "mt-4 text-3xl font-bold tracking-tight text-balance sm:text-4xl md:text-5xl",
+          inverted ? "text-navy-foreground" : "text-foreground",
         )}
       >
-        {logo && <div className="shrink-0">{logo}</div>}
-
-        <h2
-          className={cn(
-            "text-3xl font-bold tracking-tight text-balance sm:text-4xl md:text-5xl",
-            inverted ? "text-navy-foreground" : "text-foreground",
-          )}
-        >
-          {title}
-        </h2>
-      </div>
-
-      {/* SUBTITLE */}
+        {title}
+      </h2>
       {subtitle && (
         <p
           className={cn(
             "mx-auto mt-4 max-w-2xl text-base leading-relaxed sm:text-lg",
             inverted ? "text-navy-foreground/75" : "text-muted-foreground",
-            !isCenter && "mx-0",
           )}
         >
           {subtitle}
