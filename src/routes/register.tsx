@@ -37,6 +37,7 @@ function RegisterPage() {
       setError("Name, email, and password are required.");
       return;
     }
+
     setLoading(true);
     setError("");
     setNotice("");
@@ -59,9 +60,6 @@ function RegisterPage() {
         setNotice(
           "Account created. Please check your email to confirm your account, then sign in.",
         );
-        setNotice(
-          "Account created. Please check your email to confirm your account, then sign in.",
-        );
       }
 
       navigate({ to: "/login" });
@@ -75,9 +73,9 @@ function RegisterPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-background p-4 overflow-hidden">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background p-4">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary/15 blur-3xl" />
+        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/15 blur-3xl" />
         <div className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-gold/15 blur-3xl" />
       </div>
 
@@ -91,85 +89,66 @@ function RegisterPage() {
           </Link>
 
           <div className="flex items-center gap-4">
-            <Logo size="xl" />
+            <Logo size="xl" clickable={false} />
             <CardTitle className="text-2xl">Create your account</CardTitle>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-3">
           <div className="space-y-2">
-            <Label>Full Name</Label>
+            <Label htmlFor="name">Full Name</Label>
             <Input
-              placeholder="Aman Kumar"
-              value={form.name}
-              onChange={f("name")}
-            />
-            <Input
+              id="name"
               placeholder="Enter your full name"
+              autoComplete="name"
               value={form.name}
               onChange={f("name")}
             />
           </div>
+
           <div className="space-y-2">
-            <Label>Email</Label>
+            <Label htmlFor="register-email">Email</Label>
             <Input
-              type="email"
-              placeholder="you@email.com"
-              value={form.email}
-              onChange={f("email")}
-            />
-            <Input
+              id="register-email"
               type="email"
               placeholder="Enter your email address"
+              autoComplete="email"
               value={form.email}
               onChange={f("email")}
             />
           </div>
+
           <div className="space-y-2">
-            <Label>Phone</Label>
+            <Label htmlFor="phone">Phone</Label>
             <Input
-              type="tel"
-              placeholder="9876543210"
-              value={form.phone}
-              onChange={f("phone")}
-            />
-            <Input
+              id="phone"
               type="tel"
               placeholder="Enter your phone number"
+              autoComplete="tel"
               value={form.phone}
               onChange={f("phone")}
             />
           </div>
+
           <div className="space-y-2">
-            <Label>Password</Label>
+            <Label htmlFor="register-password">Password</Label>
             <Input
-              type="password"
-              placeholder="Min 6 characters"
-              value={form.password}
-              onChange={f("password")}
-            />
-            <Input
+              id="register-password"
               type="password"
               placeholder="Enter your password (Min 6 characters)"
+              autoComplete="new-password"
               value={form.password}
               onChange={f("password")}
             />
           </div>
+
           <div className="space-y-2">
-            <Label>
+            <Label htmlFor="referral-code">
               Referral Code{" "}
               <span className="text-muted-foreground">(optional)</span>
             </Label>
             <Input
-              placeholder="e.g. ABC12345"
-              value={form.referralCode}
-              onChange={f("referralCode")}
-            />
-            <Label>
-              Referral Code{" "}
-              <span className="text-muted-foreground">(optional)</span>
-            </Label>
-            <Input
+              id="referral-code"
               placeholder="e.g. ABC12345"
               value={form.referralCode}
               onChange={f("referralCode")}
@@ -187,11 +166,8 @@ function RegisterPage() {
             {loading ? "Creating account..." : "Create Account"}
           </Button>
 
-          <p className="text-sm text-center text-muted-foreground pt-1">
+          <p className="pt-1 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link to="/login" className="text-primary underline">
-              Sign in →
-            </Link>
             <Link to="/login" className="text-primary underline">
               Sign in →
             </Link>
