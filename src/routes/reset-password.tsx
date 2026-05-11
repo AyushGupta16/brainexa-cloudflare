@@ -20,48 +20,29 @@ function ResetPasswordPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sessionReady, setSessionReady] = useState(false);
 
+  // Detect invalid/expired recovery sessions and surface a clear error.
   useEffect(() => {
-    setError("");
-
-    supabase.auth.getSession().then(({ data, error }) => {
-      if (error) {
-        setError(error.message);
-        return;
-      }
-
-      if (data.session) {
-        setSessionReady(true);
-      }
-    });
-
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      if (
-        event === "PASSWORD_RECOVERY" ||
-        session ||
-        window.location.hash.includes("type=recovery")
-      ) {
-        setSessionReady(true);
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        // Valid recovery session confirmed — nothing extra needed.
         setError("");
       }
     });
 
-    const timeout = window.setTimeout(() => {
-      setSessionReady((ready) => {
-        if (!ready) {
-          setError(
-            "Password reset session was not found. Please request a fresh reset link.",
-          );
-        }
-
-        return ready;
-      });
-    }, 3000);
+    // If there's no session token at all in the URL after a short wait,
+    // tell the user up-front rather than letting a submit fail silently.
+    const timeout = window.setTimeout(async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        setError(
+          "Password reset link is invalid or has expired. Please request a new one.",
+        );
+      }
+    }, 1500);
 
     return () => {
       subscription.unsubscribe();
@@ -71,13 +52,6 @@ function ResetPasswordPage() {
 
   const handleUpdatePassword = async () => {
     if (loading) return;
-
-    if (!sessionReady) {
-      setError(
-        "Password reset session is not ready. Please request a fresh reset link.",
-      );
-      return;
-    }
 
     if (!password || !confirmPassword) {
       setError("Please enter and confirm your new password.");
@@ -96,24 +70,21 @@ function ResetPasswordPage() {
 
     setLoading(true);
     setError("");
-    setNotice("");
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        password,
-      });
+      const { error } = await supabase.auth.updateUser({ password });
 
       if (error) {
         setError(error.message);
         return;
       }
 
-      setNotice("Password updated successfully. Redirecting to login...");
+      // Redirect immediately — the login page shows the success banner.
       navigate({ to: "/login", search: { reset: "success" } });
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "Unable to update password.";
-      setError(message);
+      setError(
+        err instanceof Error ? err.message : "Unable to update password.",
+      );
     } finally {
       setLoading(false);
     }
@@ -172,22 +143,16 @@ function ResetPasswordPage() {
           </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
-          {notice && <p className="text-sm text-emerald-600">{notice}</p>}
 
           <Button
             className="w-full gap-2"
             onClick={handleUpdatePassword}
-            disabled={loading || !sessionReady}
+            disabled={loading}
           >
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Updating password...
-              </>
-            ) : !sessionReady ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Preparing reset session...
               </>
             ) : (
               "Update Password"
