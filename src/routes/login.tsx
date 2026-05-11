@@ -30,6 +30,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const search = Route.useSearch() as { reset?: string };
   const [tab, setTab] = useState<LoginRole>("student");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -81,7 +82,6 @@ function LoginPage() {
 
       if (actualRole !== tab) {
         setTab(actualRole);
-        // setPassword(""); // Clear password to prompt re-entry for the correct role
         setError(
           `This account is registered as ${ROLE_LABELS[actualRole]}. Switched to the ${ROLE_LABELS[actualRole]} tab automatically. Please enter your password again.`,
         );
@@ -129,6 +129,12 @@ function LoginPage() {
         </CardHeader>
 
         <CardContent className="space-y-4">
+          {search.reset === "success" && (
+            <p className="rounded-xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-400">
+              Password updated successfully. Please sign in.
+            </p>
+          )}
+
           <Tabs
             value={tab}
             onValueChange={(value) => {
