@@ -1,11 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/brainexa/Logo";
+import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
@@ -21,9 +22,62 @@ function ResetPasswordPage() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sessionReady, setSessionReady] = useState(false);
+
+  useEffect(() => {
+    setError("");
+
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      if (data.session) {
+        setSessionReady(true);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (
+        event === "PASSWORD_RECOVERY" ||
+        session ||
+        window.location.hash.includes("type=recovery")
+      ) {
+        setSessionReady(true);
+        setError("");
+      }
+    });
+
+    const timeout = window.setTimeout(() => {
+      setSessionReady((ready) => {
+        if (!ready) {
+          setError(
+            "Password reset session was not found. Please request a fresh reset link.",
+          );
+        }
+
+        return ready;
+      });
+    }, 3000);
+
+    return () => {
+      subscription.unsubscribe();
+      window.clearTimeout(timeout);
+    };
+  }, []);
 
   const handleUpdatePassword = async () => {
     if (loading) return;
+
+    if (!sessionReady) {
+      setError(
+        "Password reset session is not ready. Please request a fresh reset link.",
+      );
+      return;
+    }
 
     if (!password || !confirmPassword) {
       setError("Please enter and confirm your new password.");
@@ -124,11 +178,23 @@ function ResetPasswordPage() {
           {notice && <p className="text-sm text-emerald-600">{notice}</p>}
 
           <Button
-            className="w-full"
+            className="w-full gap-2"
             onClick={handleUpdatePassword}
-            disabled={loading}
+            disabled={loading || !sessionReady}
           >
-            {loading ? "Updating password..." : "Update Password"}
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Updating password...
+              </>
+            ) : !sessionReady ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Preparing reset session...
+              </>
+            ) : (
+              "Update Password"
+            )}
           </Button>
         </CardContent>
       </Card>

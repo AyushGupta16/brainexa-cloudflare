@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/brainexa/Logo";
+import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
@@ -107,11 +108,18 @@ function ForgotPasswordPage() {
           {notice && <p className="text-sm text-emerald-600">{notice}</p>}
 
           <Button
-            className="w-full"
+            className="w-full gap-2"
             onClick={handleResetPassword}
             disabled={loading}
           >
-            {loading ? "Sending reset link..." : "Send Reset Link"}
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Sending reset link...
+              </>
+            ) : (
+              "Send Reset Link"
+            )}
           </Button>
         </CardContent>
       </Card>
