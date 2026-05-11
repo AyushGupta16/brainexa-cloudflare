@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,30 +7,36 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/brainexa/Logo";
 
-export const Route = createFileRoute("/forgot-password")({
+export const Route = createFileRoute("/reset-password")({
   head: () => ({
-    meta: [
-      { title: "Forgot Password — Brainexa" },
-      {
-        name: "description",
-        content: "Reset your Brainexa account password.",
-      },
-    ],
+    meta: [{ title: "Reset Password — Brainexa" }],
   }),
-  component: ForgotPasswordPage,
+  component: ResetPasswordPage,
 });
 
-function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
-  const [notice, setNotice] = useState("");
+function ResetPasswordPage() {
+  const navigate = useNavigate();
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleResetPassword = async () => {
+  const handleUpdatePassword = async () => {
     if (loading) return;
 
-    if (!email) {
-      setError("Please enter your registered email.");
+    if (!password || !confirmPassword) {
+      setError("Please enter and confirm your new password.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
       return;
     }
 
@@ -39,10 +45,8 @@ function ForgotPasswordPage() {
     setNotice("");
 
     try {
-      const redirectTo = `${window.location.origin}/reset-password`;
-
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo,
+      const { error } = await supabase.auth.updateUser({
+        password,
       });
 
       if (error) {
@@ -50,12 +54,14 @@ function ForgotPasswordPage() {
         return;
       }
 
-      setNotice(
-        "Password reset link sent. Please check your email inbox and spam folder.",
-      );
+      setNotice("Password updated successfully. Redirecting to login...");
+
+      setTimeout(() => {
+        navigate({ to: "/login" });
+      }, 1200);
     } catch (err: unknown) {
       const message =
-        err instanceof Error ? err.message : "Unable to send reset email.";
+        err instanceof Error ? err.message : "Unable to update password.";
       setError(message);
     } finally {
       setLoading(false);
@@ -80,26 +86,37 @@ function ForgotPasswordPage() {
 
           <div className="flex items-center gap-4">
             <Logo size="xl" clickable={false} />
-            <CardTitle className="text-2xl">Forgot Password</CardTitle>
+            <CardTitle className="text-2xl">Reset Password</CardTitle>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-4">
           <p className="rounded-xl bg-muted/60 px-4 py-3 text-sm text-muted-foreground">
-            Enter your registered email. We will send you a secure password
-            reset link.
+            Enter your new password below.
           </p>
 
           <div className="space-y-2">
-            <Label htmlFor="reset-email">Email</Label>
+            <Label htmlFor="new-password">New Password</Label>
             <Input
-              id="reset-email"
-              type="email"
-              placeholder="Enter your registered email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleResetPassword()}
+              id="new-password"
+              type="password"
+              placeholder="Enter new password"
+              autoComplete="new-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="confirm-password">Confirm Password</Label>
+            <Input
+              id="confirm-password"
+              type="password"
+              placeholder="Confirm new password"
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleUpdatePassword()}
             />
           </div>
 
@@ -108,10 +125,10 @@ function ForgotPasswordPage() {
 
           <Button
             className="w-full"
-            onClick={handleResetPassword}
+            onClick={handleUpdatePassword}
             disabled={loading}
           >
-            {loading ? "Sending reset link..." : "Send Reset Link"}
+            {loading ? "Updating password..." : "Update Password"}
           </Button>
         </CardContent>
       </Card>

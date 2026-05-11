@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as RefundRouteImport } from './routes/refund'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -43,6 +44,11 @@ import { Route as CoursesCourseIdIndexRouteImport } from './routes/courses.$cour
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -201,6 +207,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/refund': typeof RefundRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/admin/courses': typeof AdminCoursesRoute
   '/admin/referrals': typeof AdminReferralsRoute
@@ -233,6 +240,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/refund': typeof RefundRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/admin/courses': typeof AdminCoursesRoute
   '/admin/referrals': typeof AdminReferralsRoute
@@ -266,6 +274,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/refund': typeof RefundRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/admin/courses': typeof AdminCoursesRoute
   '/admin/referrals': typeof AdminReferralsRoute
@@ -300,6 +309,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/refund'
     | '/register'
+    | '/reset-password'
     | '/terms'
     | '/admin/courses'
     | '/admin/referrals'
@@ -332,6 +342,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/refund'
     | '/register'
+    | '/reset-password'
     | '/terms'
     | '/admin/courses'
     | '/admin/referrals'
@@ -364,6 +375,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/refund'
     | '/register'
+    | '/reset-password'
     | '/terms'
     | '/admin/courses'
     | '/admin/referrals'
@@ -397,6 +409,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   RefundRoute: typeof RefundRoute
   RegisterRoute: typeof RegisterRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
   AdminCoursesRoute: typeof AdminCoursesRoute
   AdminReferralsRoute: typeof AdminReferralsRoute
@@ -427,6 +440,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -645,6 +665,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   RefundRoute: RefundRoute,
   RegisterRoute: RegisterRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
   AdminCoursesRoute: AdminCoursesRoute,
   AdminReferralsRoute: AdminReferralsRoute,
