@@ -109,10 +109,7 @@ function ResetPasswordPage() {
       }
 
       setNotice("Password updated successfully. Redirecting to login...");
-
-      setTimeout(() => {
-        navigate({ to: "/login" });
-      }, 1200);
+      navigate({ to: "/login", search: { reset: "success" } });
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Unable to update password.";
