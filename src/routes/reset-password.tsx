@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/brainexa/Logo";
+import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
@@ -40,7 +41,11 @@ function ResetPasswordPage() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY" || session) {
+      if (
+        event === "PASSWORD_RECOVERY" ||
+        session ||
+        window.location.hash.includes("type=recovery")
+      ) {
         setSessionReady(true);
         setError("");
       }
@@ -63,6 +68,31 @@ function ResetPasswordPage() {
       window.clearTimeout(timeout);
     };
   }, []);
+
+  const handleUpdatePassword = async () => {
+    if (loading) return;
+
+    if (!sessionReady) {
+      setError(
+        "Password reset session is not ready. Please request a fresh reset link.",
+      );
+      return;
+    }
+
+    if (!password || !confirmPassword) {
+      setError("Please enter and confirm your new password.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
 
     setLoading(true);
     setError("");
@@ -148,15 +178,23 @@ function ResetPasswordPage() {
           {notice && <p className="text-sm text-emerald-600">{notice}</p>}
 
           <Button
-            className="w-full"
+            className="w-full gap-2"
             onClick={handleUpdatePassword}
             disabled={loading || !sessionReady}
           >
-            {loading
-              ? "Updating password..."
-              : !sessionReady
-                ? "Preparing reset session..."
-                : "Update Password"}
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Updating password...
+              </>
+            ) : !sessionReady ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Preparing reset session...
+              </>
+            ) : (
+              "Update Password"
+            )}
           </Button>
         </CardContent>
       </Card>
