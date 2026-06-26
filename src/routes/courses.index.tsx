@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/brainexa/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Sparkles, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCommissionRates } from "@/lib/commissionRates";
 
 export const Route = createFileRoute("/courses/")({
   head: () => ({
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/courses/")({
 });
 
 function CoursesIndex() {
+  const { rates } = useCommissionRates();
+  const total = rates.L1 + rates.L2 + rates.L3;
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
@@ -146,13 +149,13 @@ function CoursesIndex() {
             <h3 className="mt-3 text-2xl font-extrabold text-navy-foreground sm:text-3xl">
               Refer Friends & {" "}
               <span className="bg-gradient-gold bg-clip-text text-transparent">
-                Earn up to 12.5%
+                Earn up to {total}%
               </span>
             </h3>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-navy-foreground/75">
-              Level 1 (direct): <strong className="text-navy-foreground">7%</strong> ·
-              {" "}Level 2: <strong className="text-navy-foreground">3%</strong> ·
-              {" "}Level 3: <strong className="text-navy-foreground">2.5%</strong>
+              Level 1 (direct): <strong className="text-navy-foreground">{rates.L1}%</strong> ·
+              {" "}Level 2: <strong className="text-navy-foreground">{rates.L2}%</strong> ·
+              {" "}Level 3: <strong className="text-navy-foreground">{rates.L3}%</strong>
             </p>
             <Button
               asChild

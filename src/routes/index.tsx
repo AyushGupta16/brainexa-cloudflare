@@ -37,6 +37,7 @@ import { TestimonialCard } from "@/components/brainexa/TestimonialCard";
 import { JourneyStep } from "@/components/brainexa/JourneyStep";
 import { MobileCtaBar } from "@/components/brainexa/MobileCtaBar";
 import { Footer } from "@/components/brainexa/Footer";
+import { useCommissionRates, type ReferralRates } from "@/lib/commissionRates";
 
 
 
@@ -129,9 +130,9 @@ const TESTIMONIALS = [
   },
 ];
 
-const REFERRAL = [
+const buildReferral = (total: number) => [
   { icon: Users, label: "Invite Friends" },
-  { icon: BadgePercent, label: "Earn up to 12.5% Commission" },
+  { icon: BadgePercent, label: `Earn up to ${total}% Commission` },
   { icon: Share2, label: "Share Referral Link" },
   { icon: InfinityIcon, label: "Unlimited Earning" },
 ];
@@ -144,7 +145,7 @@ const SOCIALS = [
   { label: "Facebook", icon: Facebook, href: "https://www.facebook.com/share/1HdHGUvTW4/", tone: "primary" as const },
 ];
 
-const FAQS = [
+const buildFaqs = (rates: ReferralRates) => [
   {
     q: "Is there a free demo course?",
     a: "Yes — both Class 9 and Class 10 Science have free demo courses with sample video lessons and basic quizzes so you can try Brainexa before enrolling.",
@@ -167,11 +168,15 @@ const FAQS = [
   },
   {
     q: "How does Refer & Earn work?",
-    a: "Login to your dashboard, copy your unique referral link and share it. You earn up to 12.5% across 3 levels — 7% on direct (Level 1) referrals, 3% on Level 2, and 2.5% on Level 3.",
+    a: `Login to your dashboard, copy your unique referral link and share it. You earn up to ${rates.L1 + rates.L2 + rates.L3}% across 3 levels — ${rates.L1}% on direct (Level 1) referrals, ${rates.L2}% on Level 2, and ${rates.L3}% on Level 3.`,
   },
 ];
 
 function HomePage() {
+  const { rates } = useCommissionRates();
+  const total = rates.L1 + rates.L2 + rates.L3;
+  const referral = buildReferral(total);
+  const faqs = buildFaqs(rates);
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -359,17 +364,17 @@ function HomePage() {
                   >
                   Refer Friends &{" "}
                     <span className="bg-gradient-gold bg-clip-text text-transparent">
-                      Earn up to 12.5%
+                      Earn up to {total}%
                     </span>
                   </h2>
                   <p className="mt-3 text-base leading-relaxed text-navy-foreground/75">
                     Invite friends to Brainexa and earn across 3 levels —
-                    {" "}<strong className="text-navy-foreground">7%</strong> on direct (Level 1),
-                    {" "}<strong className="text-navy-foreground">3%</strong> on Level 2, and
-                    {" "}<strong className="text-navy-foreground">2.5%</strong> on Level 3.
+                    {" "}<strong className="text-navy-foreground">{rates.L1}%</strong> on direct (Level 1),
+                    {" "}<strong className="text-navy-foreground">{rates.L2}%</strong> on Level 2, and
+                    {" "}<strong className="text-navy-foreground">{rates.L3}%</strong> on Level 3.
                   </p>
                   <p className="mt-3 text-sm leading-relaxed text-navy-foreground/70">
-                    When your friend joins using your link, you earn 7%. If their referral joins, you earn 3%. If the third level joins, you earn 2.5%.
+                    When your friend joins using your link, you earn {rates.L1}%. If their referral joins, you earn {rates.L2}%. If the third level joins, you earn {rates.L3}%.
                   </p>
                   <p className="mt-3 text-sm italic text-gold/90">
                     Login करें और Dashboard से अपना referral link copy करें.
@@ -389,7 +394,7 @@ function HomePage() {
                 </div>
 
                 <ul className="grid grid-cols-2 gap-3 sm:gap-4">
-                  {REFERRAL.map((r) => (
+                  {referral.map((r) => (
                     <li
                       key={r.label}
                       className="flex flex-col items-start gap-3 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 transition-colors hover:bg-white/10 sm:p-5"
@@ -452,7 +457,7 @@ function HomePage() {
               collapsible
               className="mt-10 rounded-2xl bg-card p-2 ring-1 ring-border shadow-soft"
             >
-              {FAQS.map((f, i) => (
+              {faqs.map((f, i) => (
                 <AccordionItem
                   key={f.q}
                   value={`item-${i}`}

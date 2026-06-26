@@ -5,8 +5,8 @@ import {
   getStudentEnrollments,
   getStudentReferralStats,
   doubts,
-  referralRates,
 } from "@/lib/mockData";
+import { useCommissionRates } from "@/lib/commissionRates";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +26,7 @@ const NAV = [
 
 function StudentDashboard() {
   const { user, profile } = useAuth();
+  const { rates: referralRates } = useCommissionRates();
   if (!user || !profile) {
     return (
       <DashboardLayout title="Student" nav={NAV} requireRole="student">

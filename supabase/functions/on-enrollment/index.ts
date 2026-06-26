@@ -70,10 +70,20 @@ Deno.serve(async (req) => {
     }
 
     const amount = Number(enrollment.amount_paid);
+
+    // Read configurable commission rates (single source of truth); fall back to
+    // defaults per level if a row is missing.
+    const defaultRates: Record<number, number> = { 1: 7, 2: 3, 3: 2.5 };
+    const { data: rateRows } = await admin
+      .from("commission_rates")
+      .select("level, percentage");
+    for (const r of rateRows ?? []) {
+      defaultRates[Number(r.level)] = Number(r.percentage);
+    }
     const levels = [
-      { level: 1, percentage: 7 },
-      { level: 2, percentage: 3 },
-      { level: 3, percentage: 2.5 },
+      { level: 1, percentage: defaultRates[1] },
+      { level: 2, percentage: defaultRates[2] },
+      { level: 3, percentage: defaultRates[3] },
     ];
 
     // Walk the upline
