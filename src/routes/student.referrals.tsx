@@ -8,9 +8,9 @@ import {
   referrals,
   users,
   withdrawals,
-  referralRates,
   type WithdrawalRequest,
 } from "@/lib/mockData";
+import { useCommissionRates } from "@/lib/commissionRates";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +37,7 @@ const NAV = [
 
 function ReferralsPage() {
   const { user } = useAuth();
+  const { rates: referralRates } = useCommissionRates();
   const [amount, setAmount] = useState("");
   const [reqs, setReqs] = useState<WithdrawalRequest[]>(
     withdrawals.filter((w) => w.userId === user?.id),
