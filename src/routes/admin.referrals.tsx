@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/brainexa/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchCommissionRates } from "@/lib/commissionRates";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -75,11 +76,8 @@ function AdminReferrals() {
     async function load() {
       setLoading(true);
 
-      const [ratesRes, profilesRes, commsRes] = await Promise.all([
-        supabase
-          .from("commission_rates")
-          .select("level, percentage")
-          .order("level", { ascending: true }),
+      const [liveRates, profilesRes, commsRes] = await Promise.all([
+        fetchCommissionRates(),
 
         supabase
           .from("profiles")
@@ -93,17 +91,7 @@ function AdminReferrals() {
           .order("created_at", { ascending: false }),
       ]);
 
-      if (ratesRes.data) {
-        const nextRates: ReferralRates = { L1: 7, L2: 3, L3: 2.5 };
-
-        ratesRes.data.forEach((r) => {
-          if (r.level === 1) nextRates.L1 = Number(r.percentage);
-          if (r.level === 2) nextRates.L2 = Number(r.percentage);
-          if (r.level === 3) nextRates.L3 = Number(r.percentage);
-        });
-
-        setRates(nextRates);
-      }
+      setRates(liveRates);
 
       const profiles = (profilesRes.data ?? []) as ReferralRow[];
 
