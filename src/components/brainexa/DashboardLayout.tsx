@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { type ReactNode } from "react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/brainexa/ThemeToggle";
 import { LogOut, Home } from "lucide-react";
 
 interface NavItem {
@@ -26,7 +27,9 @@ export function DashboardLayout({ title, nav, children, requireRole }: Props) {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center max-w-sm">
           <h2 className="text-xl font-semibold mb-2">Loading…</h2>
-          <p className="text-muted-foreground text-sm">Preparing your dashboard.</p>
+          <p className="text-muted-foreground text-sm">
+            Preparing your dashboard.
+          </p>
         </div>
       </div>
     );
@@ -56,7 +59,9 @@ export function DashboardLayout({ title, nav, children, requireRole }: Props) {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center max-w-sm">
           <h2 className="text-xl font-semibold mb-2">Just a moment…</h2>
-          <p className="text-muted-foreground text-sm">Finishing account setup.</p>
+          <p className="text-muted-foreground text-sm">
+            Finishing account setup.
+          </p>
         </div>
       </div>
     );
@@ -94,6 +99,7 @@ export function DashboardLayout({ title, nav, children, requireRole }: Props) {
             <span className="text-xs text-muted-foreground hidden sm:inline">
               {profile.name} ({profile.role})
             </span>
+            <ThemeToggle />
             <Button variant="ghost" size="icon" asChild>
               <Link to="/">
                 <Home className="h-4 w-4" />
@@ -119,7 +125,9 @@ export function DashboardLayout({ title, nav, children, requireRole }: Props) {
               <Link
                 key={n.to}
                 to={n.to}
-                activeProps={{ className: "bg-primary text-primary-foreground" }}
+                activeProps={{
+                  className: "bg-primary text-primary-foreground",
+                }}
                 className="px-3 py-2 rounded-md text-sm hover:bg-accent flex items-center gap-2 whitespace-nowrap"
               >
                 {n.icon}
