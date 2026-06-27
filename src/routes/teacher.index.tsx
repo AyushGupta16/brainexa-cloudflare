@@ -1,13 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { DashboardLayout } from "@/components/brainexa/DashboardLayout";
+import { enrollments, doubts, getTopic } from "@/lib/mockData";
 import {
-  getTeacherSubjects,
-  getTeacherEarnings,
-  enrollments,
-  doubts,
-  getTopic,
-} from "@/lib/mockData";
+  getTeacherSubjectsForUser,
+  getTeacherEarningsForUser,
+} from "@/lib/coursesService";
 import { Button } from "@/components/ui/button";
 import {
   PageGreeting,
@@ -39,8 +37,8 @@ function TeacherDashboard() {
         <></>
       </DashboardLayout>
     );
-  const assigned = getTeacherSubjects(user.id);
-  const earnings = getTeacherEarnings(user.id);
+  const assigned = getTeacherSubjectsForUser(user.id);
+  const earnings = getTeacherEarningsForUser(user.id);
   const courseIds = new Set(assigned.map((a) => a.course.id));
   const totalStudents = enrollments.filter((e) =>
     courseIds.has(e.courseId),
