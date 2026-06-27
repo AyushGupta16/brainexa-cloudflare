@@ -40,6 +40,7 @@ import { Route as AdminTeachersRouteImport } from './routes/admin.teachers'
 import { Route as AdminReferralsRouteImport } from './routes/admin.referrals'
 import { Route as AdminCoursesRouteImport } from './routes/admin.courses'
 import { Route as CoursesCourseIdIndexRouteImport } from './routes/courses.$courseId.index'
+import { Route as TeacherSubjectsSubjectIdRouteImport } from './routes/teacher.subjects.$subjectId'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -196,6 +197,12 @@ const CoursesCourseIdIndexRoute = CoursesCourseIdIndexRouteImport.update({
   path: '/courses/$courseId/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeacherSubjectsSubjectIdRoute =
+  TeacherSubjectsSubjectIdRouteImport.update({
+    id: '/$subjectId',
+    path: '/$subjectId',
+    getParentRoute: () => TeacherSubjectsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -220,7 +227,7 @@ export interface FileRoutesByFullPath {
   '/subjects/$subjectId': typeof SubjectsSubjectIdRoute
   '/teacher/doubts': typeof TeacherDoubtsRoute
   '/teacher/earnings': typeof TeacherEarningsRoute
-  '/teacher/subjects': typeof TeacherSubjectsRoute
+  '/teacher/subjects': typeof TeacherSubjectsRouteWithChildren
   '/tests/$testId': typeof TestsTestIdRoute
   '/topics/$topicId': typeof TopicsTopicIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -228,6 +235,7 @@ export interface FileRoutesByFullPath {
   '/student/': typeof StudentIndexRoute
   '/teacher/': typeof TeacherIndexRoute
   '/tests/': typeof TestsIndexRoute
+  '/teacher/subjects/$subjectId': typeof TeacherSubjectsSubjectIdRoute
   '/courses/$courseId/': typeof CoursesCourseIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -253,7 +261,7 @@ export interface FileRoutesByTo {
   '/subjects/$subjectId': typeof SubjectsSubjectIdRoute
   '/teacher/doubts': typeof TeacherDoubtsRoute
   '/teacher/earnings': typeof TeacherEarningsRoute
-  '/teacher/subjects': typeof TeacherSubjectsRoute
+  '/teacher/subjects': typeof TeacherSubjectsRouteWithChildren
   '/tests/$testId': typeof TestsTestIdRoute
   '/topics/$topicId': typeof TopicsTopicIdRoute
   '/admin': typeof AdminIndexRoute
@@ -261,6 +269,7 @@ export interface FileRoutesByTo {
   '/student': typeof StudentIndexRoute
   '/teacher': typeof TeacherIndexRoute
   '/tests': typeof TestsIndexRoute
+  '/teacher/subjects/$subjectId': typeof TeacherSubjectsSubjectIdRoute
   '/courses/$courseId': typeof CoursesCourseIdIndexRoute
 }
 export interface FileRoutesById {
@@ -287,7 +296,7 @@ export interface FileRoutesById {
   '/subjects/$subjectId': typeof SubjectsSubjectIdRoute
   '/teacher/doubts': typeof TeacherDoubtsRoute
   '/teacher/earnings': typeof TeacherEarningsRoute
-  '/teacher/subjects': typeof TeacherSubjectsRoute
+  '/teacher/subjects': typeof TeacherSubjectsRouteWithChildren
   '/tests/$testId': typeof TestsTestIdRoute
   '/topics/$topicId': typeof TopicsTopicIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -295,6 +304,7 @@ export interface FileRoutesById {
   '/student/': typeof StudentIndexRoute
   '/teacher/': typeof TeacherIndexRoute
   '/tests/': typeof TestsIndexRoute
+  '/teacher/subjects/$subjectId': typeof TeacherSubjectsSubjectIdRoute
   '/courses/$courseId/': typeof CoursesCourseIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
     | '/student/'
     | '/teacher/'
     | '/tests/'
+    | '/teacher/subjects/$subjectId'
     | '/courses/$courseId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -363,6 +374,7 @@ export interface FileRouteTypes {
     | '/student'
     | '/teacher'
     | '/tests'
+    | '/teacher/subjects/$subjectId'
     | '/courses/$courseId'
   id:
     | '__root__'
@@ -396,6 +408,7 @@ export interface FileRouteTypes {
     | '/student/'
     | '/teacher/'
     | '/tests/'
+    | '/teacher/subjects/$subjectId'
     | '/courses/$courseId/'
   fileRoutesById: FileRoutesById
 }
@@ -422,7 +435,7 @@ export interface RootRouteChildren {
   SubjectsSubjectIdRoute: typeof SubjectsSubjectIdRoute
   TeacherDoubtsRoute: typeof TeacherDoubtsRoute
   TeacherEarningsRoute: typeof TeacherEarningsRoute
-  TeacherSubjectsRoute: typeof TeacherSubjectsRoute
+  TeacherSubjectsRoute: typeof TeacherSubjectsRouteWithChildren
   TestsTestIdRoute: typeof TestsTestIdRoute
   TopicsTopicIdRoute: typeof TopicsTopicIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -652,8 +665,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesCourseIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/teacher/subjects/$subjectId': {
+      id: '/teacher/subjects/$subjectId'
+      path: '/$subjectId'
+      fullPath: '/teacher/subjects/$subjectId'
+      preLoaderRoute: typeof TeacherSubjectsSubjectIdRouteImport
+      parentRoute: typeof TeacherSubjectsRoute
+    }
   }
 }
+
+interface TeacherSubjectsRouteChildren {
+  TeacherSubjectsSubjectIdRoute: typeof TeacherSubjectsSubjectIdRoute
+}
+
+const TeacherSubjectsRouteChildren: TeacherSubjectsRouteChildren = {
+  TeacherSubjectsSubjectIdRoute: TeacherSubjectsSubjectIdRoute,
+}
+
+const TeacherSubjectsRouteWithChildren = TeacherSubjectsRoute._addFileChildren(
+  TeacherSubjectsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -678,7 +710,7 @@ const rootRouteChildren: RootRouteChildren = {
   SubjectsSubjectIdRoute: SubjectsSubjectIdRoute,
   TeacherDoubtsRoute: TeacherDoubtsRoute,
   TeacherEarningsRoute: TeacherEarningsRoute,
-  TeacherSubjectsRoute: TeacherSubjectsRoute,
+  TeacherSubjectsRoute: TeacherSubjectsRouteWithChildren,
   TestsTestIdRoute: TestsTestIdRoute,
   TopicsTopicIdRoute: TopicsTopicIdRoute,
   AdminIndexRoute: AdminIndexRoute,
