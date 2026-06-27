@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth";
 import { ThemeProvider, themeInitScript } from "@/lib/theme";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 
@@ -105,6 +106,7 @@ function RootComponent() {
     <ThemeProvider>
       <AuthProvider>
         <Outlet />
+        <Toaster />
       </AuthProvider>
     </ThemeProvider>
   );

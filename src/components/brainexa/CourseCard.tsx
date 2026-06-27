@@ -41,7 +41,7 @@ export function CourseCard({
       <div
         className={cn(
           "mb-5 -mx-6 -mt-6 h-24 px-6 pt-5",
-          isPremium ? "bg-gradient-navy" : "bg-gradient-to-br from-primary/10 to-emerald/10",
+          isPremium ? "bg-gradient-navy" : "bg-linear-to-br from-primary/10 to-emerald/10",
         )}
       >
         <span

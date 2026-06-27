@@ -152,7 +152,7 @@ function DashboardMock() {
           {/* Video lesson tile */}
           <div className="mt-5 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
             <div className="flex items-center gap-3">
-              <div className="relative flex h-14 w-20 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-glow to-primary">
+              <div className="relative flex h-14 w-20 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-primary-glow to-primary">
                 <PlayCircle className="h-7 w-7 text-white" />
               </div>
               <div className="min-w-0 flex-1">

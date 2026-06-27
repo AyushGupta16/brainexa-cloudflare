@@ -70,6 +70,9 @@ export interface Course {
   description: string;
   price: number;
   thumbnail?: string;
+  color?: string;
+  category?: string;
+  isActive?: boolean;
   subjects: Subject[];
 }
 
@@ -161,6 +164,10 @@ export const courses: Course[] = [
     description:
       "Complete Class 10 Science board preparation — full syllabus videos, notes, chapter-wise quizzes and doubt support.",
     price: 299,
+    category: "Class 10",
+    color: "#6366f1",
+    thumbnail: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=640&q=80",
+    isActive: true,
     subjects: [
       {
         id: "s-c10-sci",
@@ -213,6 +220,10 @@ export const courses: Course[] = [
     description:
       "Free demo of Class 10 Science with sample video lessons and a basic quiz so you can try Brainexa before enrolling.",
     price: 0,
+    category: "Class 10",
+    color: "#0ea5e9",
+    thumbnail: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=640&q=80",
+    isActive: true,
     subjects: [
       {
         id: "s-c10-sci-demo",
@@ -238,6 +249,10 @@ export const courses: Course[] = [
     description:
       "Complete Class 9 Science board preparation — full syllabus videos, notes, chapter-wise quizzes and doubt support.",
     price: 299,
+    category: "Class 9",
+    color: "#10b981",
+    thumbnail: "https://images.unsplash.com/photo-1453928582365-b6ad33cbcf64?w=640&q=80",
+    isActive: true,
     subjects: [
       {
         id: "s-c9-sci",
@@ -290,6 +305,10 @@ export const courses: Course[] = [
     description:
       "Free demo of Class 9 Science with sample video lessons and a basic quiz so you can try Brainexa before enrolling.",
     price: 0,
+    category: "Class 9",
+    color: "#f59e0b",
+    thumbnail: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=640&q=80",
+    isActive: true,
     subjects: [
       {
         id: "s-c9-sci-demo",
