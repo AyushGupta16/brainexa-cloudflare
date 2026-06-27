@@ -22,11 +22,11 @@ export function JourneyStep({
         <>
           <span
             aria-hidden
-            className="absolute left-6 top-12 h-[calc(100%-1rem)] w-0.5 bg-gradient-to-b from-primary/40 to-transparent md:hidden"
+            className="absolute left-6 top-12 h-[calc(100%-1rem)] w-0.5 bg-linear-to-b from-primary/40 to-transparent md:hidden"
           />
           <span
             aria-hidden
-            className="absolute left-[calc(50%+1.75rem)] top-6 hidden h-0.5 w-[calc(100%-3.5rem)] bg-gradient-to-r from-primary/40 to-primary/10 md:block"
+            className="absolute left-[calc(50%+1.75rem)] top-6 hidden h-0.5 w-[calc(100%-3.5rem)] bg-linear-to-r from-primary/40 to-primary/10 md:block"
           />
         </>
       )}

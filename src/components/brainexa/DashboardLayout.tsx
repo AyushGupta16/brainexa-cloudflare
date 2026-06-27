@@ -3,6 +3,7 @@ import { type ReactNode } from "react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/brainexa/ThemeToggle";
+import { Logo } from "@/components/brainexa/Logo";
 import { LogOut, Home } from "lucide-react";
 
 interface NavItem {
@@ -15,10 +16,12 @@ interface Props {
   title: string;
   nav: NavItem[];
   children: ReactNode;
+  /** Optional right-hand agenda/queue rail (shown on xl+ screens). */
+  aside?: ReactNode;
   requireRole?: "admin" | "teacher" | "student";
 }
 
-export function DashboardLayout({ title, nav, children, requireRole }: Props) {
+export function DashboardLayout({ title, nav, children, aside, requireRole }: Props) {
   const { user, profile, loading, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -85,12 +88,20 @@ export function DashboardLayout({ title, nav, children, requireRole }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      <header className="bg-card border-b sticky top-0 z-30">
-        <div className="container mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link to="/" className="font-bold text-primary">
-              Brainexa
+    <div className="min-h-screen bg-app">
+      <header className="bg-card/80 backdrop-blur border-b sticky top-0 z-30">
+        <div className="container mx-auto px-4 h-18 flex items-center justify-between">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <Link to="/" className="flex items-center gap-2.5 group" aria-label="BRAINEXA home">
+              <Logo size="md" clickable={false} />
+              <span className="hidden flex-col leading-tight sm:flex">
+                <span className="text-base font-extrabold tracking-tight text-foreground sm:text-lg">
+                  BRAINEXA
+                </span>
+                <span className="hidden text-[10px] font-medium uppercase tracking-wider text-muted-foreground lg:block">
+                  Shaping Intelligent Futures
+                </span>
+              </span>
             </Link>
             <span className="text-muted-foreground">/</span>
             <span className="font-medium text-sm">{title}</span>
@@ -101,13 +112,15 @@ export function DashboardLayout({ title, nav, children, requireRole }: Props) {
             </span>
             <ThemeToggle />
             <Button variant="ghost" size="icon" asChild>
-              <Link to="/">
+              <Link to="/" title="Home" aria-label="Home">
                 <Home className="h-4 w-4" />
               </Link>
             </Button>
             <Button
               variant="ghost"
               size="icon"
+              title="Log out"
+              aria-label="Log out"
               onClick={() => {
                 logout();
                 navigate({ to: "/login" });
@@ -118,17 +131,21 @@ export function DashboardLayout({ title, nav, children, requireRole }: Props) {
           </div>
         </div>
       </header>
-      <div className="container mx-auto px-4 py-6 grid gap-6 md:grid-cols-[220px_1fr]">
+      <div
+        className={`container mx-auto px-4 py-6 grid gap-6 md:grid-cols-[210px_minmax(0,1fr)] ${
+          aside ? "xl:grid-cols-[210px_minmax(0,1fr)_330px]" : ""
+        }`}
+      >
         <aside className="md:sticky md:top-20 h-fit">
-          <nav className="bg-card border rounded-lg p-2 flex md:flex-col gap-1 overflow-x-auto">
+          <nav className="bg-card/70 backdrop-blur border rounded-2xl p-2 flex md:flex-col gap-1 overflow-x-auto shadow-soft">
             {nav.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
                 activeProps={{
-                  className: "bg-primary text-primary-foreground",
+                  className: "bg-gradient-accent text-primary-foreground shadow-soft",
                 }}
-                className="px-3 py-2 rounded-md text-sm hover:bg-accent flex items-center gap-2 whitespace-nowrap"
+                className="px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:bg-accent/60 hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"
               >
                 {n.icon}
                 {n.label}
@@ -137,6 +154,9 @@ export function DashboardLayout({ title, nav, children, requireRole }: Props) {
           </nav>
         </aside>
         <main className="min-w-0">{children}</main>
+        {aside && (
+          <aside className="min-w-0 xl:sticky xl:top-20 xl:h-fit">{aside}</aside>
+        )}
       </div>
     </div>
   );

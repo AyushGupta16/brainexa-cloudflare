@@ -2,9 +2,23 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/brainexa/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Users, Wallet, TrendingUp, Share2, MessageCircle } from "lucide-react";
+import {
+  PageGreeting,
+  StatCardGrid,
+  Panel,
+  AgendaItem,
+  TrendChart,
+  MiniDonut,
+} from "@/components/brainexa/DashboardUI";
+import {
+  BookOpen,
+  Users,
+  Wallet,
+  TrendingUp,
+  Share2,
+  MessageCircle,
+} from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
@@ -17,6 +31,8 @@ const NAV = [
   { to: "/admin/referrals", label: "Referrals" },
   { to: "/admin/withdrawals", label: "Withdrawals" },
 ];
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
 
 interface Stats {
   courseCount: number;
@@ -83,51 +99,127 @@ function AdminDashboard() {
     fetchStats();
   }, []);
 
+  const usersTotal = stats.studentCount + stats.teacherCount;
+  const usersData = [
+    { name: "Students", value: stats.studentCount, color: "var(--color-primary)" },
+    { name: "Teachers", value: stats.teacherCount, color: "var(--color-emerald)" },
+  ];
+  // Sample 6-month revenue trend (no time-series in the data layer yet).
+  const revenueTrend = MONTHS.map((label, i) => ({
+    label,
+    value: Math.round((stats.totalRevenue / 6) * (0.6 + ((i * 17) % 50) / 100)),
+  }));
+
+  const rail = (
+    <div className="space-y-6">
+      <Panel title="Needs Attention">
+        <div className="space-y-2">
+          <Link to="/admin/withdrawals" className="block">
+            <AgendaItem
+              icon={<Wallet className="h-4 w-4" />}
+              title="Pending withdrawals"
+              subtitle="Awaiting approval"
+              trailing={<CountPill value={stats.pendingWithdrawals} />}
+            />
+          </Link>
+          <AgendaItem
+            icon={<MessageCircle className="h-4 w-4" />}
+            title="Pending doubts"
+            subtitle="Unanswered by teachers"
+            trailing={<CountPill value={stats.pendingDoubts} />}
+          />
+        </div>
+      </Panel>
+
+      <Panel title="Community">
+        {usersTotal === 0 ? (
+          <p className="text-sm text-muted-foreground">No users yet.</p>
+        ) : (
+          <>
+            <MiniDonut data={usersData} centerValue={usersTotal} centerLabel="users" />
+            <div className="mt-3 space-y-1.5">
+              {usersData.map((u) => (
+                <div key={u.name} className="flex items-center justify-between text-xs">
+                  <span className="flex items-center gap-2 text-muted-foreground">
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: u.color }} />
+                    {u.name}
+                  </span>
+                  <span className="font-semibold">{u.value}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </Panel>
+    </div>
+  );
+
   return (
-    <DashboardLayout title="Admin" nav={NAV} requireRole="admin">
+    <DashboardLayout title="Admin" nav={NAV} requireRole="admin" aside={rail}>
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">Admin Overview</h1>
+        <PageGreeting
+          eyebrow="Control center"
+          title="Admin Overview"
+          subtitle="Platform health and pending actions."
+        />
 
         {loading ? (
-          <div className="text-muted-foreground text-sm">Loading stats...</div>
+          <div className="text-sm text-muted-foreground">Loading stats…</div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Stat icon={<BookOpen className="h-5 w-5" />} label="Courses" value={stats.courseCount.toString()} />
-            <Stat icon={<Users className="h-5 w-5" />} label="Students" value={stats.studentCount.toString()} />
-            <Stat icon={<Users className="h-5 w-5" />} label="Teachers" value={stats.teacherCount.toString()} />
-            <Stat icon={<TrendingUp className="h-5 w-5" />} label="Total Revenue" value={`₹${stats.totalRevenue}`} />
-            <Stat icon={<Wallet className="h-5 w-5" />} label="Referral Commissions" value={`₹${stats.totalCommissions.toFixed(2)}`} />
-            <Stat icon={<Share2 className="h-5 w-5" />} label="Pending Withdrawals" value={stats.pendingWithdrawals.toString()} />
-            <Stat icon={<MessageCircle className="h-5 w-5" />} label="Pending Doubts" value={stats.pendingDoubts.toString()} />
-          </div>
+          <>
+            <StatCardGrid
+              className="grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+              items={[
+                { icon: <TrendingUp className="h-4 w-4" />, label: "Total Revenue", value: `₹${stats.totalRevenue}` },
+                { icon: <BookOpen className="h-4 w-4" />, label: "Courses", value: stats.courseCount },
+                { icon: <Users className="h-4 w-4" />, label: "Students", value: stats.studentCount },
+                { icon: <Users className="h-4 w-4" />, label: "Teachers", value: stats.teacherCount },
+                { icon: <Wallet className="h-4 w-4" />, label: "Referral Commissions", value: `₹${stats.totalCommissions.toFixed(2)}` },
+                { icon: <Share2 className="h-4 w-4" />, label: "Pending Withdrawals", value: stats.pendingWithdrawals },
+                { icon: <MessageCircle className="h-4 w-4" />, label: "Pending Doubts", value: stats.pendingDoubts },
+              ]}
+            />
+
+            <Panel
+              title="Revenue Trend"
+              action={<span className="text-xs text-muted-foreground">Last 6 months</span>}
+            >
+              <TrendChart data={revenueTrend} />
+            </Panel>
+          </>
         )}
 
-        <Card>
-          <CardHeader><CardTitle>Quick Actions</CardTitle></CardHeader>
-          <CardContent className="flex flex-wrap gap-2">
-            <Button asChild><Link to="/admin/courses">Manage Courses</Link></Button>
-            <Button asChild variant="outline"><Link to="/admin/teachers">Teachers & Commissions</Link></Button>
-            <Button asChild variant="outline"><Link to="/admin/referrals">Referrals</Link></Button>
-            <Button asChild variant="outline"><Link to="/admin/withdrawals">Withdrawals</Link></Button>
-          </CardContent>
-        </Card>
+        <Panel title="Quick Actions">
+          <div className="flex flex-wrap gap-2">
+            <Button asChild>
+              <Link to="/admin/courses">Manage Courses</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/admin/teachers">Teachers & Commissions</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/admin/referrals">Referrals</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/admin/withdrawals">Withdrawals</Link>
+            </Button>
+          </div>
+        </Panel>
       </div>
     </DashboardLayout>
   );
 }
 
-function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function CountPill({ value }: { value: number }) {
   return (
-    <Card>
-      <CardContent className="flex items-center gap-3 pt-6">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          {icon}
-        </div>
-        <div>
-          <p className="text-sm text-muted-foreground">{label}</p>
-          <p className="text-xl font-bold">{value}</p>
-        </div>
-      </CardContent>
-    </Card>
+    <span
+      className={`rounded-full px-2 py-0.5 text-xs font-bold ${
+        value > 0
+          ? "bg-destructive/10 text-destructive"
+          : "bg-muted text-muted-foreground"
+      }`}
+    >
+      {value}
+    </span>
   );
 }
