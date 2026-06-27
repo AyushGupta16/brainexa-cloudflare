@@ -1,5 +1,12 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+  Outlet,
+  Link,
+  createRootRoute,
+  HeadContent,
+  Scripts,
+} from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth";
+import { ThemeProvider, themeInitScript } from "@/lib/theme";
 
 import appCss from "../styles.css?url";
 
@@ -8,7 +15,9 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">
+          Page not found
+        </h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
         </p>
@@ -30,14 +39,20 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "BRAINEXA — Master Class 9 & 10 Science | Shaping Intelligent Futures" },
+      {
+        title:
+          "BRAINEXA — Master Class 9 & 10 Science | Shaping Intelligent Futures",
+      },
       {
         name: "description",
         content:
           "Class 9 & 10 Science complete preparation with concept-first video lessons, quizzes, notes and 24/7 doubt support. Free demo available. Premium course at ₹299.",
       },
       { name: "author", content: "Brainexa" },
-      { property: "og:title", content: "BRAINEXA — Master Class 9 & 10 Science" },
+      {
+        property: "og:title",
+        content: "BRAINEXA — Master Class 9 & 10 Science",
+      },
       {
         property: "og:description",
         content:
@@ -45,7 +60,10 @@ export const Route = createRootRoute({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "BRAINEXA — Master Class 9 & 10 Science" },
+      {
+        name: "twitter:title",
+        content: "BRAINEXA — Master Class 9 & 10 Science",
+      },
       {
         name: "twitter:description",
         content:
@@ -66,8 +84,12 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script
+          // Sets the theme class on <html> before paint to avoid a flash.
+          dangerouslySetInnerHTML={{ __html: themeInitScript }}
+        />
         <HeadContent />
       </head>
       <body>
@@ -80,8 +102,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <AuthProvider>
-      <Outlet />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Outlet />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

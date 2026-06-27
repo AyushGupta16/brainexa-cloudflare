@@ -3,6 +3,7 @@ import { Menu } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/brainexa/Logo";
+import { ThemeToggle } from "@/components/brainexa/ThemeToggle";
 
 import {
   Sheet,
@@ -73,6 +74,7 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
           <Button variant="ghost" asChild>
             <Link to="/login">Login</Link>
           </Button>
@@ -84,60 +86,58 @@ export function Navbar() {
           </Button>
         </div>
 
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              aria-label="Open menu"
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[88vw] max-w-sm p-0">
-            <SheetTitle className="sr-only">Navigation</SheetTitle>
-            <div className="flex h-full flex-col">
-              <div className="flex items-center gap-2.5 border-b p-5">
-                <Logo size="lg" />
-                <div className="flex flex-col leading-tight">
-                  <span className="text-base font-extrabold">BRAINEXA</span>
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                    Shaping Intelligent Futures
-                  </span>
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggle />
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Open menu">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[88vw] max-w-sm p-0">
+              <SheetTitle className="sr-only">Navigation</SheetTitle>
+              <div className="flex h-full flex-col">
+                <div className="flex items-center gap-2.5 border-b p-5">
+                  <Logo size="lg" />
+                  <div className="flex flex-col leading-tight">
+                    <span className="text-base font-extrabold">BRAINEXA</span>
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                      Shaping Intelligent Futures
+                    </span>
+                  </div>
+                </div>
+                <nav className="flex flex-col gap-1 p-4">
+                  {NAV_LINKS.map((l) => (
+                    <Link
+                      key={l.to}
+                      to={l.to}
+                      onClick={() => setOpen(false)}
+                      className="rounded-lg px-4 py-3 text-base font-medium text-foreground transition-colors hover:bg-muted"
+                    >
+                      {l.label}
+                    </Link>
+                  ))}
+                </nav>
+                <div className="mt-auto flex flex-col gap-2 border-t p-4">
+                  <Button variant="outline" size="lg" asChild>
+                    <Link to="/login" onClick={() => setOpen(false)}>
+                      Login
+                    </Link>
+                  </Button>
+                  <Button
+                    size="lg"
+                    asChild
+                    className="bg-gradient-gold text-gold-foreground hover:opacity-90"
+                  >
+                    <Link to="/courses" onClick={() => setOpen(false)}>
+                      Enroll Now
+                    </Link>
+                  </Button>
                 </div>
               </div>
-              <nav className="flex flex-col gap-1 p-4">
-                {NAV_LINKS.map((l) => (
-                  <Link
-                    key={l.to}
-                    to={l.to}
-                    onClick={() => setOpen(false)}
-                    className="rounded-lg px-4 py-3 text-base font-medium text-foreground transition-colors hover:bg-muted"
-                  >
-                    {l.label}
-                  </Link>
-                ))}
-              </nav>
-              <div className="mt-auto flex flex-col gap-2 border-t p-4">
-                <Button variant="outline" size="lg" asChild>
-                  <Link to="/login" onClick={() => setOpen(false)}>
-                    Login
-                  </Link>
-                </Button>
-                <Button
-                  size="lg"
-                  asChild
-                  className="bg-gradient-gold text-gold-foreground hover:opacity-90"
-                >
-                  <Link to="/courses" onClick={() => setOpen(false)}>
-                    Enroll Now
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );
