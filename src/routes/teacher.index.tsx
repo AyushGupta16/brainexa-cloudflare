@@ -15,17 +15,11 @@ import {
   TrendChart,
 } from "@/components/brainexa/DashboardUI";
 import { BookOpen, Users, Wallet, TrendingUp, MessageCircle } from "lucide-react";
+import { TEACHER_NAV as NAV } from "@/components/brainexa/dashboardNav";
 
 export const Route = createFileRoute("/teacher/")({
   component: TeacherDashboard,
 });
-
-const NAV = [
-  { to: "/teacher", label: "Overview" },
-  { to: "/teacher/subjects", label: "My Subjects" },
-  { to: "/teacher/earnings", label: "Earnings" },
-  { to: "/teacher/doubts", label: "Doubts" },
-];
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
 
@@ -134,13 +128,14 @@ function TeacherDashboard() {
         />
 
         <Panel
+          hoverAccent
           title="Earnings Trend"
           action={<span className="text-xs text-muted-foreground">Last 6 months</span>}
         >
           <TrendChart data={earningsTrend} />
         </Panel>
 
-        <Panel title="Earnings Breakdown">
+        <Panel hoverAccent title="Earnings Breakdown">
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
               <div className="text-xs text-muted-foreground">Paid</div>
@@ -157,7 +152,7 @@ function TeacherDashboard() {
           </div>
         </Panel>
 
-        <Panel title="My Subjects">
+        <Panel hoverAccent title="My Subjects">
           <div className="space-y-2">
             {assigned.map((a) => (
               <div

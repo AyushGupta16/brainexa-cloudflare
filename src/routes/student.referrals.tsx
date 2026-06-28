@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { DashboardLayout } from "@/components/brainexa/DashboardLayout";
+import { STUDENT_NAV as NAV } from "@/components/brainexa/dashboardNav";
 import {
   getStudentReferralStats,
   referralCommissions,
@@ -27,13 +28,6 @@ import {
 export const Route = createFileRoute("/student/referrals")({
   component: ReferralsPage,
 });
-
-const NAV = [
-  { to: "/student", label: "Overview" },
-  { to: "/student/courses", label: "My Courses" },
-  { to: "/student/referrals", label: "Referrals" },
-  { to: "/student/doubts", label: "Doubts" },
-];
 
 function ReferralsPage() {
   const { user } = useAuth();

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { DashboardLayout } from "@/components/brainexa/DashboardLayout";
+import { TEACHER_NAV as NAV } from "@/components/brainexa/dashboardNav";
 import { getTeacherEarnings, getTeacherSubjects, enrollments } from "@/lib/mockData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,13 +16,6 @@ import {
 export const Route = createFileRoute("/teacher/earnings")({
   component: TeacherEarnings,
 });
-
-const NAV = [
-  { to: "/teacher", label: "Overview" },
-  { to: "/teacher/subjects", label: "My Subjects" },
-  { to: "/teacher/earnings", label: "Earnings" },
-  { to: "/teacher/doubts", label: "Doubts" },
-];
 
 function TeacherEarnings() {
   const { user } = useAuth();

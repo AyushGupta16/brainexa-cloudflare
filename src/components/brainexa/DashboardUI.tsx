@@ -1,4 +1,10 @@
-import { type ReactNode, useId, useState } from "react";
+import {
+  type ReactNode,
+  createContext,
+  useContext,
+  useId,
+  useState,
+} from "react";
 import {
   Area,
   AreaChart,
@@ -14,6 +20,24 @@ import {
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
+/* Hover group — coordinates ONE dark/active element (a stat card OR a */
+/* panel/chart) across the whole center column. Following the mouse,   */
+/* persisting on the last-hovered element when the cursor is idle.     */
+/* ------------------------------------------------------------------ */
+
+type HoverGroupValue = { active: string | null; setActive: (key: string) => void };
+const HoverGroupContext = createContext<HoverGroupValue | null>(null);
+
+export function HoverGroup({ children }: { children: ReactNode }) {
+  const [active, setActive] = useState<string | null>(null);
+  return (
+    <HoverGroupContext.Provider value={{ active, setActive }}>
+      {children}
+    </HoverGroupContext.Provider>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Greeting header (replaces the old heavy navy hero)                  */
 /* ------------------------------------------------------------------ */
 
@@ -21,12 +45,10 @@ export function PageGreeting({
   eyebrow,
   title,
   subtitle,
-  action,
 }: {
   eyebrow?: string;
   title: ReactNode;
   subtitle?: ReactNode;
-  action?: ReactNode;
 }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">
@@ -43,7 +65,6 @@ export function PageGreeting({
           <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
         )}
       </div>
-      {action}
     </div>
   );
 }
@@ -81,9 +102,9 @@ export function StatCard({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       className={cn(
-        "rounded-2xl p-4 shadow-soft transition-all duration-300",
+        "min-w-0 rounded-2xl p-4 shadow-soft transition-all duration-300",
         accent
-          ? "bg-gradient-accent text-primary-foreground"
+          ? "bg-gradient-dash text-gold ring-1 ring-white/10"
           : "border bg-card",
         neon &&
           "-translate-y-0.5 shadow-[0_0_0_1.5px_var(--color-primary-glow),0_10px_30px_-6px_var(--color-primary-glow)]",
@@ -95,7 +116,7 @@ export function StatCard({
             <span
               className={cn(
                 "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg",
-                accent ? "bg-white/20" : "bg-primary/10 text-primary",
+                accent ? "bg-gold/15 text-gold" : "bg-primary/10 text-primary",
               )}
             >
               {icon}
@@ -104,7 +125,7 @@ export function StatCard({
           <span
             className={cn(
               "truncate text-xs font-medium uppercase tracking-wide",
-              accent ? "text-primary-foreground/80" : "text-muted-foreground",
+              accent ? "text-gold/80" : "text-muted-foreground",
             )}
           >
             {label}
@@ -114,7 +135,7 @@ export function StatCard({
           <span
             className={cn(
               "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-bold",
-              accent ? "bg-white/20 text-primary-foreground" : "text-emerald",
+              accent ? "bg-white/10 text-gold" : "text-emerald",
             )}
           >
             {delta}
@@ -126,8 +147,8 @@ export function StatCard({
         <ProgressBar
           value={progress}
           className="mt-3"
-          trackClassName={accent ? "bg-white/25" : "bg-muted"}
-          barClassName={accent ? "bg-white" : "bg-gradient-accent"}
+          trackClassName={accent ? "bg-white/15" : "bg-muted"}
+          barClassName={accent ? "bg-gradient-gold" : "bg-gradient-accent"}
         />
       )}
     </div>
@@ -156,8 +177,21 @@ export function StatCardGrid({
   /** Grid column classes, e.g. "grid-cols-2 lg:grid-cols-4". */
   className?: string;
 }) {
+  const group = useContext(HoverGroupContext);
+  // `hovered` only drives the neon glow while a card is actually under the
+  // cursor. The persistent dark card comes from the shared hover group so a
+  // card and the chart are never both dark at once.
   const [hovered, setHovered] = useState<number | null>(null);
-  const darkIndex = hovered ?? 0;
+  const [localDark, setLocalDark] = useState(0); // fallback if no group
+  const active = group?.active ?? null;
+  const darkIdx =
+    group == null
+      ? localDark
+      : active == null
+        ? 0 // default: first card dark until something is hovered
+        : active.startsWith("stat-")
+          ? Number(active.slice(5))
+          : -1; // a non-card (chart/panel) is active → no card is dark
   return (
     <div
       className={cn("grid gap-4", className)}
@@ -167,9 +201,13 @@ export function StatCardGrid({
         <StatCard
           key={item.label}
           {...item}
-          accent={darkIndex === i}
+          accent={darkIdx === i}
           neon={hovered === i}
-          onMouseEnter={() => setHovered(i)}
+          onMouseEnter={() => {
+            setHovered(i);
+            if (group) group.setActive(`stat-${i}`);
+            else setLocalDark(i);
+          }}
         />
       ))}
     </div>
@@ -214,21 +252,45 @@ export function Panel({
   children,
   className,
   bodyClassName,
+  hoverAccent = false,
 }: {
   title?: ReactNode;
   action?: ReactNode;
   children: ReactNode;
   className?: string;
   bodyClassName?: string;
+  /** Strong navy panel + gold heading on hover; joins the center hover group. */
+  hoverAccent?: boolean;
 }) {
+  const group = useContext(HoverGroupContext);
+  const id = useId();
+  // When in a hover group, stay dark while this panel is the active element
+  // (persists when the cursor is idle); fall back to plain CSS :hover otherwise.
+  const isActive = hoverAccent && group != null && group.active === id;
   return (
     <section
-      className={cn("rounded-2xl border bg-card shadow-soft", className)}
+      onMouseEnter={
+        hoverAccent && group ? () => group.setActive(id) : undefined
+      }
+      className={cn(
+        "group min-w-0 rounded-2xl border bg-card shadow-soft transition-all duration-300",
+        hoverAccent && "dash-hover",
+        isActive && "dash-active",
+        className,
+      )}
     >
       {(title || action) && (
         <header className="flex items-center justify-between gap-3 px-5 pt-5">
           {title && (
-            <h2 className="text-sm font-semibold tracking-tight">{title}</h2>
+            <h2
+              className={cn(
+                "text-sm font-semibold tracking-tight",
+                hoverAccent && "transition-colors group-hover:text-gold",
+                isActive && "text-gold",
+              )}
+            >
+              {title}
+            </h2>
           )}
           {action}
         </header>

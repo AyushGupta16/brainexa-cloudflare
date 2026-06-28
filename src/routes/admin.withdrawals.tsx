@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/brainexa/DashboardLayout";
+import { ADMIN_NAV as NAV } from "@/components/brainexa/dashboardNav";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,14 +18,6 @@ import {
 export const Route = createFileRoute("/admin/withdrawals")({
   component: AdminWithdrawals,
 });
-
-const NAV = [
-  { to: "/admin", label: "Overview" },
-  { to: "/admin/courses", label: "Courses" },
-  { to: "/admin/teachers", label: "Teachers" },
-  { to: "/admin/referrals", label: "Referrals" },
-  { to: "/admin/withdrawals", label: "Withdrawals" },
-];
 
 interface Withdrawal {
   id: string;

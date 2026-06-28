@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { DashboardLayout } from "@/components/brainexa/DashboardLayout";
+import { TEACHER_NAV as NAV } from "@/components/brainexa/dashboardNav";
 import { doubts, getTopic, getTeacherSubjects } from "@/lib/mockData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,13 +12,6 @@ import { Badge } from "@/components/ui/badge";
 export const Route = createFileRoute("/teacher/doubts")({
   component: TeacherDoubts,
 });
-
-const NAV = [
-  { to: "/teacher", label: "Overview" },
-  { to: "/teacher/subjects", label: "My Subjects" },
-  { to: "/teacher/earnings", label: "Earnings" },
-  { to: "/teacher/doubts", label: "Doubts" },
-];
 
 function TeacherDoubts() {
   const { user } = useAuth();

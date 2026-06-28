@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { DashboardLayout } from "@/components/brainexa/DashboardLayout";
+import { TEACHER_NAV as NAV } from "@/components/brainexa/dashboardNav";
 import { getSubject } from "@/lib/mockData";
 import { useCourses, canTeacherEditSubject } from "@/lib/coursesService";
 import { ChapterManager } from "@/components/brainexa/course/ChapterManager";
@@ -11,13 +12,6 @@ import { ChevronLeft } from "lucide-react";
 export const Route = createFileRoute("/teacher/subjects/$subjectId")({
   component: TeacherSubjectManage,
 });
-
-const NAV = [
-  { to: "/teacher", label: "Overview" },
-  { to: "/teacher/subjects", label: "My Subjects" },
-  { to: "/teacher/earnings", label: "Earnings" },
-  { to: "/teacher/doubts", label: "Doubts" },
-];
 
 function TeacherSubjectManage() {
   const { subjectId } = Route.useParams();

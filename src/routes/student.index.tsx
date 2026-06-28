@@ -19,17 +19,11 @@ import {
   MiniDonut,
 } from "@/components/brainexa/DashboardUI";
 import { BookOpen, MessageCircle, Share2, Wallet, Copy } from "lucide-react";
+import { STUDENT_NAV as NAV } from "@/components/brainexa/dashboardNav";
 
 export const Route = createFileRoute("/student/")({
   component: StudentDashboard,
 });
-
-const NAV = [
-  { to: "/student", label: "Overview" },
-  { to: "/student/courses", label: "My Courses" },
-  { to: "/student/referrals", label: "Referrals" },
-  { to: "/student/doubts", label: "Doubts" },
-];
 
 const WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -174,6 +168,7 @@ function StudentDashboard() {
         />
 
         <Panel
+          hoverAccent
           title="Study Activity"
           action={
             <span className="text-xs text-muted-foreground">Last 7 days</span>
@@ -182,7 +177,7 @@ function StudentDashboard() {
           <TrendChart data={activity} />
         </Panel>
 
-        <Panel title="Continue Learning">
+        <Panel hoverAccent title="Continue Learning">
           <div className="space-y-3">
             {courseProgress.length === 0 && (
               <p className="text-sm text-muted-foreground">No courses yet.</p>
@@ -218,6 +213,7 @@ function StudentDashboard() {
         </Panel>
 
         <Panel
+          hoverAccent
           title={
             <span className="flex items-center gap-2">
               <Share2 className="h-4 w-4" /> Your Referral Link
