@@ -108,11 +108,13 @@ function TeacherDashboard() {
               label: "My Earnings",
               value: `₹${earnings.totalEarning}`,
               progress: collectionPct,
+              to: "/teacher/earnings",
             },
             {
               icon: <BookOpen className="h-4 w-4" />,
               label: "Assigned Subjects",
               value: assigned.length,
+              to: "/teacher/subjects",
             },
             {
               icon: <Users className="h-4 w-4" />,
@@ -123,6 +125,7 @@ function TeacherDashboard() {
               icon: <TrendingUp className="h-4 w-4" />,
               label: "Total Sales",
               value: `₹${earnings.totalSales}`,
+              to: "/teacher/earnings",
             },
           ]}
         />

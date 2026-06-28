@@ -3,6 +3,7 @@ import {
   LayoutDashboard,
   BookOpen,
   Users,
+  GraduationCap,
   Wallet,
   Share2,
   MessageCircle,
@@ -34,6 +35,7 @@ export const TEACHER_NAV: DashboardNavItem[] = [
 export const ADMIN_NAV: DashboardNavItem[] = [
   { to: "/admin", label: "Overview", icon: <LayoutDashboard className={ic} /> },
   { to: "/admin/courses", label: "Courses", icon: <BookOpen className={ic} /> },
+  { to: "/admin/students", label: "Students", icon: <GraduationCap className={ic} /> },
   { to: "/admin/teachers", label: "Teachers", icon: <Users className={ic} /> },
   { to: "/admin/referrals", label: "Referrals", icon: <Share2 className={ic} /> },
   { to: "/admin/withdrawals", label: "Withdrawals", icon: <Wallet className={ic} /> },

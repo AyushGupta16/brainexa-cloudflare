@@ -17,6 +17,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -83,6 +84,7 @@ export function StatCard({
   neon = false,
   onMouseEnter,
   onMouseLeave,
+  to,
 }: {
   icon?: ReactNode;
   label: string;
@@ -96,20 +98,20 @@ export function StatCard({
   neon?: boolean;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
+  /** Optional route — turns the card into a link to a sub-page. */
+  to?: string;
 }) {
-  return (
-    <div
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      className={cn(
-        "min-w-0 rounded-2xl p-4 shadow-soft transition-all duration-300",
-        accent
-          ? "bg-gradient-dash text-gold ring-1 ring-white/10"
-          : "border bg-card",
-        neon &&
-          "-translate-y-0.5 shadow-[0_0_0_1.5px_var(--color-primary-glow),0_10px_30px_-6px_var(--color-primary-glow)]",
-      )}
-    >
+  const className = cn(
+    "block min-w-0 rounded-2xl p-4 shadow-soft transition-all duration-300",
+    accent
+      ? "bg-gradient-dash text-gold ring-1 ring-white/10"
+      : "border bg-card",
+    neon &&
+      "-translate-y-0.5 shadow-[0_0_0_1.5px_var(--color-primary-glow),0_10px_30px_-6px_var(--color-primary-glow)]",
+    to && "cursor-pointer",
+  );
+  const inner = (
+    <>
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           {icon && (
@@ -151,6 +153,28 @@ export function StatCard({
           barClassName={accent ? "bg-gradient-gold" : "bg-gradient-accent"}
         />
       )}
+    </>
+  );
+
+  if (to) {
+    return (
+      <Link
+        to={to}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        className={className}
+      >
+        {inner}
+      </Link>
+    );
+  }
+  return (
+    <div
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      className={className}
+    >
+      {inner}
     </div>
   );
 }
@@ -162,6 +186,8 @@ export interface StatItem {
   delta?: string;
   /** 0–100; renders a soft progress bar under the value. */
   progress?: number;
+  /** Optional route — turns the card into a link to a sub-page. */
+  to?: string;
 }
 
 /**

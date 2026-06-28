@@ -183,11 +183,11 @@ function AdminDashboard() {
               className="grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
               items={[
                 { icon: <TrendingUp className="h-4 w-4" />, label: "Total Revenue", value: `₹${stats.totalRevenue}` },
-                { icon: <BookOpen className="h-4 w-4" />, label: "Courses", value: stats.courseCount },
-                { icon: <Users className="h-4 w-4" />, label: "Students", value: stats.studentCount },
-                { icon: <Users className="h-4 w-4" />, label: "Teachers", value: stats.teacherCount },
-                { icon: <Wallet className="h-4 w-4" />, label: "Referral Commissions", value: `₹${stats.totalCommissions.toFixed(2)}` },
-                { icon: <Share2 className="h-4 w-4" />, label: "Pending Withdrawals", value: stats.pendingWithdrawals },
+                { icon: <BookOpen className="h-4 w-4" />, label: "Courses", value: stats.courseCount, to: "/admin/courses" },
+                { icon: <Users className="h-4 w-4" />, label: "Students", value: stats.studentCount, to: "/admin/students" },
+                { icon: <Users className="h-4 w-4" />, label: "Teachers", value: stats.teacherCount, to: "/admin/teachers" },
+                { icon: <Wallet className="h-4 w-4" />, label: "Referral Commissions", value: `₹${stats.totalCommissions.toFixed(2)}`, to: "/admin/referrals" },
+                { icon: <Share2 className="h-4 w-4" />, label: "Pending Withdrawals", value: stats.pendingWithdrawals, to: "/admin/withdrawals" },
                 { icon: <MessageCircle className="h-4 w-4" />, label: "Pending Doubts", value: stats.pendingDoubts },
               ]}
             />

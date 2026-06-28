@@ -148,21 +148,25 @@ function StudentDashboard() {
               label: "Enrolled Courses",
               value: enrollments.length,
               progress: avgProgress,
+              to: "/student/courses",
             },
             {
               icon: <MessageCircle className="h-4 w-4" />,
               label: "My Doubts",
               value: myDoubts.length,
+              to: "/student/doubts",
             },
             {
               icon: <Share2 className="h-4 w-4" />,
               label: "Total Referrals",
               value: stats.totalReferrals,
+              to: "/student/referrals",
             },
             {
               icon: <Wallet className="h-4 w-4" />,
               label: "Referral Earnings",
               value: `₹${stats.total}`,
+              to: "/student/referrals",
             },
           ]}
         />
