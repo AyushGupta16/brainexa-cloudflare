@@ -36,6 +36,14 @@ export const Route = createFileRoute("/admin/courses")({
   component: AdminCourses,
 });
 
+const NAV = [
+  { to: "/admin", label: "Overview" },
+  { to: "/admin/courses", label: "Courses" },
+  { to: "/admin/teachers", label: "Teachers" },
+  { to: "/admin/referrals", label: "Referrals" },
+  { to: "/admin/withdrawals", label: "Withdrawals" },
+];
+
 const iconBtn = "h-7 w-7";
 
 function AdminCourses() {

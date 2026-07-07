@@ -13,6 +13,13 @@ export const Route = createFileRoute("/teacher/subjects/$subjectId")({
   component: TeacherSubjectManage,
 });
 
+const NAV = [
+  { to: "/teacher", label: "Overview" },
+  { to: "/teacher/subjects", label: "My Subjects" },
+  { to: "/teacher/earnings", label: "Earnings" },
+  { to: "/teacher/doubts", label: "Doubts" },
+];
+
 function TeacherSubjectManage() {
   const { subjectId } = Route.useParams();
   const { user } = useAuth();
