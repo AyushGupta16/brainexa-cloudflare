@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/brainexa/Logo";
+import { GoogleSignInButton } from "@/components/brainexa/GoogleSignInButton";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
@@ -95,6 +96,15 @@ function RegisterPage() {
         </CardHeader>
 
         <CardContent className="space-y-3">
+          
+          <GoogleSignInButton label="Sign up with Google" onError={setError} />
+
+          <div className="flex items-center gap-3">
+            <span className="h-px flex-1 bg-border" />
+            <span className="text-xs text-muted-foreground">or</span>
+            <span className="h-px flex-1 bg-border" />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="name">Full Name</Label>
             <Input
