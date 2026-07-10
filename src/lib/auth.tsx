@@ -1,6 +1,11 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
+
+/** sessionStorage key used to hand an OAuth error to the login page. */
+export const OAUTH_ERROR_KEY = "brainexa.oauthError";
 
 export type Role = "admin" | "teacher" | "student";
 
@@ -22,6 +27,7 @@ interface AuthState {
   profile: Profile | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<Profile>;
+  signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   register: (
     name: string,
@@ -55,9 +61,93 @@ async function fetchProfile(userId: string): Promise<Profile | null> {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [completingOAuth, setCompletingOAuth] = useState(false);
+
+  // Handle the return from a Google OAuth redirect. Supabase may land the user
+  // on any allow-listed URL (or the Site URL when no redirect matches), so this
+  // runs app-wide rather than being tied to the login page.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Password-recovery links (also `?code=`) are handled on that page.
+    if (window.location.pathname === "/reset-password") return;
+
+    const params = new URLSearchParams(window.location.search);
+    const oauthError = params.get("error_description") ?? params.get("error");
+    const code = params.get("code");
+    if (!oauthError && !code) return;
+
+    const cleanUrl = window.location.pathname + window.location.hash;
+
+    if (oauthError) {
+      const message = decodeURIComponent(oauthError.replace(/\+/g, " "));
+      window.sessionStorage.setItem(OAUTH_ERROR_KEY, message);
+      window.history.replaceState({}, "", cleanUrl);
+      navigate({ to: "/login" });
+      return;
+    }
+
+    setCompletingOAuth(true);
+    let cancelled = false;
+
+    const redirectByRole = (role: Role) => {
+      if (role === "admin") navigate({ to: "/admin" });
+      else if (role === "teacher") navigate({ to: "/teacher" });
+      else navigate({ to: "/student" });
+    };
+
+    (async () => {
+      // detectSessionInUrl exchanges the code for a session asynchronously;
+      // poll until it lands.
+      for (let i = 0; i < 25 && !cancelled; i++) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (cancelled) return;
+
+        if (session?.user) {
+          // Profile is auto-created by the handle_new_user DB trigger; retry
+          // briefly in case it hasn't committed yet.
+          let role: Role = "student";
+          for (let j = 0; j < 6 && !cancelled; j++) {
+            const p = await fetchProfile(session.user.id);
+            if (cancelled) return;
+            if (p) {
+              role = p.role;
+              break;
+            }
+            await new Promise((r) => setTimeout(r, 400));
+          }
+          if (cancelled) return;
+          window.history.replaceState({}, "", cleanUrl);
+          redirectByRole(role);
+          setCompletingOAuth(false);
+          return;
+        }
+
+        await new Promise((r) => setTimeout(r, 400));
+      }
+
+      if (!cancelled) {
+        window.sessionStorage.setItem(
+          OAUTH_ERROR_KEY,
+          "Google sign-in could not be completed. Please try again.",
+        );
+        window.history.replaceState({}, "", cleanUrl);
+        setCompletingOAuth(false);
+        navigate({ to: "/login" });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate]);
 
   useEffect(() => {
     // Get initial session
@@ -138,6 +228,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const signInWithGoogle = async () => {
+    // Return to the same page we started from (login or register) so the user
+    // sees the spinner reappear on the button rather than a separate screen.
+    const redirectTo =
+      typeof window !== "undefined"
+        ? `${window.location.origin}${window.location.pathname}`
+        : undefined;
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo,
+        queryParams: {
+          access_type: "offline",
+          prompt: "consent",
+        },
+      },
+    });
+
+    if (error) throw error;
+    // On success the browser is redirected to Google, so nothing else runs here.
+  };
+
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -185,8 +298,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthCtx.Provider value={{ user, profile, loading, login, logout, register }}>
+    <AuthCtx.Provider value={{ user, profile, loading, login, signInWithGoogle, logout, register }}>
       {children}
+      {completingOAuth && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur">
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Completing sign-in…
+          </p>
+        </div>
+      )}
     </AuthCtx.Provider>
   );
 }

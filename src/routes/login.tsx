@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { useAuth } from "@/lib/auth";
+import { useEffect, useState } from "react";
+import { useAuth, OAUTH_ERROR_KEY } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GraduationCap, Shield, Users, Loader2 } from "lucide-react";
 import { Logo } from "@/components/brainexa/Logo";
+import { GoogleSignInButton } from "@/components/brainexa/GoogleSignInButton";
 
 type LoginRole = "student" | "teacher" | "admin";
 
@@ -36,6 +37,16 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Surface a Google sign-in error handed off by the OAuth redirect handler.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const message = window.sessionStorage.getItem(OAUTH_ERROR_KEY);
+    if (message) {
+      setError(message);
+      window.sessionStorage.removeItem(OAUTH_ERROR_KEY);
+    }
+  }, []);
 
   const redirectByRole = (role: LoginRole) => {
     if (role === "admin") {
@@ -160,6 +171,8 @@ function LoginPage() {
               </TabsTrigger>
             </TabsList>
 
+
+
             <TabsContent value={tab} className="mt-4 space-y-4">
               {ROLE_MESSAGES[tab].info && (
                 <p className="rounded-xl bg-muted/60 px-4 py-3 text-sm text-muted-foreground">
@@ -178,6 +191,14 @@ function LoginPage() {
                   {ROLE_MESSAGES[tab].warning}
                 </p>
               )}
+
+              <GoogleSignInButton onError={setError} />
+
+              <div className="flex items-center gap-3">
+                <span className="h-px flex-1 bg-border" />
+                <span className="text-xs text-muted-foreground">or</span>
+                <span className="h-px flex-1 bg-border" />
+              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
