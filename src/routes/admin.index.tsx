@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { DashboardLayout } from "@/components/brainexa/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -19,18 +19,11 @@ import {
   Share2,
   MessageCircle,
 } from "lucide-react";
+import { ADMIN_NAV as NAV } from "@/components/brainexa/dashboardNav";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
 });
-
-const NAV = [
-  { to: "/admin", label: "Overview" },
-  { to: "/admin/courses", label: "Courses" },
-  { to: "/admin/teachers", label: "Teachers" },
-  { to: "/admin/referrals", label: "Referrals" },
-  { to: "/admin/withdrawals", label: "Withdrawals" },
-];
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
 
@@ -44,60 +37,59 @@ interface Stats {
   pendingDoubts: number;
 }
 
+const DEFAULT_STATS: Stats = {
+  courseCount: 0,
+  studentCount: 0,
+  teacherCount: 0,
+  totalRevenue: 0,
+  totalCommissions: 0,
+  pendingWithdrawals: 0,
+  pendingDoubts: 0,
+};
+
+async function fetchAdminStats(): Promise<Stats> {
+  const [
+    { count: courseCount },
+    { data: profiles },
+    { data: enrollments },
+    { data: commissions },
+    { count: pendingWithdrawals },
+    { count: pendingDoubts },
+  ] = await Promise.all([
+    supabase.from("courses").select("*", { count: "exact", head: true }),
+    supabase.from("profiles").select("role"),
+    supabase.from("enrollments").select("amount_paid"),
+    supabase.from("commissions").select("amount"),
+    supabase.from("withdrawals").select("*", { count: "exact", head: true }).eq("status", "requested"),
+    supabase.from("doubts").select("*", { count: "exact", head: true }).eq("status", "pending"),
+  ]);
+
+  const studentCount = profiles?.filter((p) => p.role === "student").length ?? 0;
+  const teacherCount = profiles?.filter((p) => p.role === "teacher").length ?? 0;
+  const totalRevenue = enrollments?.reduce((a, e) => a + (e.amount_paid ?? 0), 0) ?? 0;
+  const totalCommissions = commissions?.reduce((a, c) => a + Number(c.amount ?? 0), 0) ?? 0;
+
+  return {
+    courseCount: courseCount ?? 0,
+    studentCount,
+    teacherCount,
+    totalRevenue,
+    totalCommissions,
+    pendingWithdrawals: pendingWithdrawals ?? 0,
+    pendingDoubts: pendingDoubts ?? 0,
+  };
+}
+
 function AdminDashboard() {
-  const [stats, setStats] = useState<Stats>({
-    courseCount: 0,
-    studentCount: 0,
-    teacherCount: 0,
-    totalRevenue: 0,
-    totalCommissions: 0,
-    pendingWithdrawals: 0,
-    pendingDoubts: 0,
+  // React Query caches the result, so returning to this tab shows data
+  // instantly and refetches in the background (no more infinite spinner).
+  const { data, isPending } = useQuery({
+    queryKey: ["admin-stats"],
+    queryFn: fetchAdminStats,
+    staleTime: 30_000,
   });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchStats() {
-      try {
-        const [
-          { count: courseCount },
-          { data: profiles },
-          { data: enrollments },
-          { data: commissions },
-          { count: pendingWithdrawals },
-          { count: pendingDoubts },
-        ] = await Promise.all([
-          supabase.from("courses").select("*", { count: "exact", head: true }),
-          supabase.from("profiles").select("role"),
-          supabase.from("enrollments").select("amount_paid"),
-          supabase.from("commissions").select("amount"),
-          supabase.from("withdrawals").select("*", { count: "exact", head: true }).eq("status", "requested"),
-          supabase.from("doubts").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        ]);
-
-        const studentCount = profiles?.filter((p) => p.role === "student").length ?? 0;
-        const teacherCount = profiles?.filter((p) => p.role === "teacher").length ?? 0;
-        const totalRevenue = enrollments?.reduce((a, e) => a + (e.amount_paid ?? 0), 0) ?? 0;
-        const totalCommissions = commissions?.reduce((a, c) => a + Number(c.amount ?? 0), 0) ?? 0;
-
-        setStats({
-          courseCount: courseCount ?? 0,
-          studentCount,
-          teacherCount,
-          totalRevenue,
-          totalCommissions,
-          pendingWithdrawals: pendingWithdrawals ?? 0,
-          pendingDoubts: pendingDoubts ?? 0,
-        });
-      } catch (err) {
-        console.error("Failed to load admin stats:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchStats();
-  }, []);
+  const stats = data ?? DEFAULT_STATS;
+  const loading = isPending;
 
   const usersTotal = stats.studentCount + stats.teacherCount;
   const usersData = [
@@ -111,9 +103,29 @@ function AdminDashboard() {
   }));
 
   const rail = (
-    <div className="space-y-6">
-      <Panel title="Needs Attention">
-        <div className="space-y-2">
+    <div className="space-y-2">
+      <Panel title="Quick Actions">
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { to: "/admin/courses", label: "Manage Courses" },
+            { to: "/admin/referrals", label: "Referrals" },
+            { to: "/admin/teachers", label: "Teachers & Commissions" },
+            { to: "/admin/withdrawals", label: "Withdrawals" },
+          ].map((a) => (
+            <Button
+              key={a.to}
+              asChild
+              variant="outline"
+              className="h-auto w-full justify-center whitespace-normal py-2 text-center leading-tight"
+            >
+              <Link to={a.to}>{a.label}</Link>
+            </Button>
+          ))}
+        </div>
+      </Panel>
+
+      <Panel title="Critical Actions">
+        <div className="space-y-1">
           <Link to="/admin/withdrawals" className="block">
             <AgendaItem
               icon={<Wallet className="h-4 w-4" />}
@@ -171,16 +183,17 @@ function AdminDashboard() {
               className="grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
               items={[
                 { icon: <TrendingUp className="h-4 w-4" />, label: "Total Revenue", value: `₹${stats.totalRevenue}` },
-                { icon: <BookOpen className="h-4 w-4" />, label: "Courses", value: stats.courseCount },
-                { icon: <Users className="h-4 w-4" />, label: "Students", value: stats.studentCount },
-                { icon: <Users className="h-4 w-4" />, label: "Teachers", value: stats.teacherCount },
-                { icon: <Wallet className="h-4 w-4" />, label: "Referral Commissions", value: `₹${stats.totalCommissions.toFixed(2)}` },
-                { icon: <Share2 className="h-4 w-4" />, label: "Pending Withdrawals", value: stats.pendingWithdrawals },
+                { icon: <BookOpen className="h-4 w-4" />, label: "Courses", value: stats.courseCount, to: "/admin/courses" },
+                { icon: <Users className="h-4 w-4" />, label: "Students", value: stats.studentCount, to: "/admin/students" },
+                { icon: <Users className="h-4 w-4" />, label: "Teachers", value: stats.teacherCount, to: "/admin/teachers" },
+                { icon: <Wallet className="h-4 w-4" />, label: "Referral Commissions", value: `₹${stats.totalCommissions.toFixed(2)}`, to: "/admin/referrals" },
+                { icon: <Share2 className="h-4 w-4" />, label: "Pending Withdrawals", value: stats.pendingWithdrawals, to: "/admin/withdrawals" },
                 { icon: <MessageCircle className="h-4 w-4" />, label: "Pending Doubts", value: stats.pendingDoubts },
               ]}
             />
 
             <Panel
+              hoverAccent
               title="Revenue Trend"
               action={<span className="text-xs text-muted-foreground">Last 6 months</span>}
             >
@@ -188,23 +201,6 @@ function AdminDashboard() {
             </Panel>
           </>
         )}
-
-        <Panel title="Quick Actions">
-          <div className="flex flex-wrap gap-2">
-            <Button asChild>
-              <Link to="/admin/courses">Manage Courses</Link>
-            </Button>
-            <Button asChild variant="outline">
-              <Link to="/admin/teachers">Teachers & Commissions</Link>
-            </Button>
-            <Button asChild variant="outline">
-              <Link to="/admin/referrals">Referrals</Link>
-            </Button>
-            <Button asChild variant="outline">
-              <Link to="/admin/withdrawals">Withdrawals</Link>
-            </Button>
-          </div>
-        </Panel>
       </div>
     </DashboardLayout>
   );

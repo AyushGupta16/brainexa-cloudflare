@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/brainexa/ThemeToggle";
 import { Logo } from "@/components/brainexa/Logo";
+import { HoverGroup } from "@/components/brainexa/DashboardUI";
 import { LogOut, Home } from "lucide-react";
 
 interface NavItem {
@@ -87,8 +88,17 @@ export function DashboardLayout({ title, nav, children, aside, requireRole }: Pr
     );
   }
 
+  const initials =
+    profile.name
+      ?.split(" ")
+      .filter(Boolean)
+      .map((w) => w[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() || "U";
+
   return (
-    <div className="min-h-screen bg-app">
+    <div className="min-h-screen bg-app overflow-x-clip">
       <header className="bg-card/80 backdrop-blur border-b sticky top-0 z-30">
         <div className="container mx-auto px-4 h-18 flex items-center justify-between">
           <div className="flex items-center gap-2.5 sm:gap-3">
@@ -107,12 +117,16 @@ export function DashboardLayout({ title, nav, children, aside, requireRole }: Pr
             <span className="font-medium text-sm">{title}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground hidden sm:inline">
+            {/* <span className="text-xs text-muted-foreground hidden sm:inline">
               {profile.name} ({profile.role})
-            </span>
+            </span> */}
             <ThemeToggle />
             <Button variant="ghost" size="icon" asChild>
-              <Link to="/" title="Home" aria-label="Home">
+              <Link
+                to={nav[0]?.to ?? "/"}
+                title="Dashboard overview"
+                aria-label="Dashboard overview"
+              >
                 <Home className="h-4 w-4" />
               </Link>
             </Button>
@@ -132,30 +146,55 @@ export function DashboardLayout({ title, nav, children, aside, requireRole }: Pr
         </div>
       </header>
       <div
-        className={`container mx-auto px-4 py-6 grid gap-6 md:grid-cols-[210px_minmax(0,1fr)] ${
+        className={`container mx-auto px-4 py-6 grid grid-cols-1 gap-6 xl:gap-12 md:grid-cols-[200px_minmax(0,1fr)] ${
           aside ? "xl:grid-cols-[210px_minmax(0,1fr)_330px]" : ""
         }`}
       >
-        <aside className="md:sticky md:top-20 h-fit">
-          <nav className="bg-card/70 backdrop-blur border rounded-2xl p-2 flex md:flex-col gap-1 overflow-x-auto shadow-soft">
+        <aside className="md:sticky md:top-20">
+          <nav className="bg-card/70 backdrop-blur border rounded-2xl p-3 flex md:flex-col gap-1.5 overflow-x-auto shadow-soft md:h-[calc(100dvh-7rem)]">
+            <p className="hidden px-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 md:block">
+              Menu
+            </p>
             {nav.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
+                activeOptions={{ exact: true }}
                 activeProps={{
-                  className: "bg-gradient-accent text-primary-foreground shadow-soft",
+                  className: "bg-gradient-dash text-navy-foreground shadow-soft",
                 }}
-                className="px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:bg-accent/60 hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"
+                className="flex items-center gap-3 whitespace-nowrap rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
               >
-                {n.icon}
+                <span className="shrink-0 [&>svg]:h-4.5 [&>svg]:w-4.5">
+                  {n.icon}
+                </span>
                 {n.label}
               </Link>
             ))}
+            <div className="mt-auto hidden md:block">
+              <div className="flex items-center gap-2.5 rounded-xl border bg-card/60 p-2.5">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-dash text-xs font-bold text-navy-foreground">
+                  {initials}
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold leading-tight">
+                    {profile.name}
+                  </p>
+                  <p className="truncate text-xs capitalize text-muted-foreground">
+                    {profile.role}
+                  </p>
+                </div>
+              </div>
+            </div>
           </nav>
         </aside>
-        <main className="min-w-0">{children}</main>
+        <main className="min-w-0">
+          <HoverGroup>{children}</HoverGroup>
+        </main>
         {aside && (
-          <aside className="min-w-0 xl:sticky xl:top-20 xl:h-fit">{aside}</aside>
+          <aside className="min-w-0 md:col-span-2 xl:col-span-1 xl:sticky xl:top-20 xl:h-fit">
+            {aside}
+          </aside>
         )}
       </div>
     </div>

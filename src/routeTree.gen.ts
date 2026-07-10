@@ -37,6 +37,7 @@ import { Route as StudentCoursesRouteImport } from './routes/student.courses'
 import { Route as ChaptersChapterIdRouteImport } from './routes/chapters.$chapterId'
 import { Route as AdminWithdrawalsRouteImport } from './routes/admin.withdrawals'
 import { Route as AdminTeachersRouteImport } from './routes/admin.teachers'
+import { Route as AdminStudentsRouteImport } from './routes/admin.students'
 import { Route as AdminReferralsRouteImport } from './routes/admin.referrals'
 import { Route as AdminCoursesRouteImport } from './routes/admin.courses'
 import { Route as CoursesCourseIdIndexRouteImport } from './routes/courses.$courseId.index'
@@ -182,6 +183,11 @@ const AdminTeachersRoute = AdminTeachersRouteImport.update({
   path: '/admin/teachers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminStudentsRoute = AdminStudentsRouteImport.update({
+  id: '/admin/students',
+  path: '/admin/students',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminReferralsRoute = AdminReferralsRouteImport.update({
   id: '/admin/referrals',
   path: '/admin/referrals',
@@ -218,6 +224,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/admin/courses': typeof AdminCoursesRoute
   '/admin/referrals': typeof AdminReferralsRoute
+  '/admin/students': typeof AdminStudentsRoute
   '/admin/teachers': typeof AdminTeachersRoute
   '/admin/withdrawals': typeof AdminWithdrawalsRoute
   '/chapters/$chapterId': typeof ChaptersChapterIdRoute
@@ -252,6 +259,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/admin/courses': typeof AdminCoursesRoute
   '/admin/referrals': typeof AdminReferralsRoute
+  '/admin/students': typeof AdminStudentsRoute
   '/admin/teachers': typeof AdminTeachersRoute
   '/admin/withdrawals': typeof AdminWithdrawalsRoute
   '/chapters/$chapterId': typeof ChaptersChapterIdRoute
@@ -287,6 +295,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/admin/courses': typeof AdminCoursesRoute
   '/admin/referrals': typeof AdminReferralsRoute
+  '/admin/students': typeof AdminStudentsRoute
   '/admin/teachers': typeof AdminTeachersRoute
   '/admin/withdrawals': typeof AdminWithdrawalsRoute
   '/chapters/$chapterId': typeof ChaptersChapterIdRoute
@@ -323,6 +332,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin/courses'
     | '/admin/referrals'
+    | '/admin/students'
     | '/admin/teachers'
     | '/admin/withdrawals'
     | '/chapters/$chapterId'
@@ -357,6 +367,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin/courses'
     | '/admin/referrals'
+    | '/admin/students'
     | '/admin/teachers'
     | '/admin/withdrawals'
     | '/chapters/$chapterId'
@@ -391,6 +402,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin/courses'
     | '/admin/referrals'
+    | '/admin/students'
     | '/admin/teachers'
     | '/admin/withdrawals'
     | '/chapters/$chapterId'
@@ -426,6 +438,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   AdminCoursesRoute: typeof AdminCoursesRoute
   AdminReferralsRoute: typeof AdminReferralsRoute
+  AdminStudentsRoute: typeof AdminStudentsRoute
   AdminTeachersRoute: typeof AdminTeachersRoute
   AdminWithdrawalsRoute: typeof AdminWithdrawalsRoute
   ChaptersChapterIdRoute: typeof ChaptersChapterIdRoute
@@ -644,6 +657,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTeachersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/students': {
+      id: '/admin/students'
+      path: '/admin/students'
+      fullPath: '/admin/students'
+      preLoaderRoute: typeof AdminStudentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/referrals': {
       id: '/admin/referrals'
       path: '/admin/referrals'
@@ -701,6 +721,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   AdminCoursesRoute: AdminCoursesRoute,
   AdminReferralsRoute: AdminReferralsRoute,
+  AdminStudentsRoute: AdminStudentsRoute,
   AdminTeachersRoute: AdminTeachersRoute,
   AdminWithdrawalsRoute: AdminWithdrawalsRoute,
   ChaptersChapterIdRoute: ChaptersChapterIdRoute,

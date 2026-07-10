@@ -120,6 +120,8 @@
   --gradient-app: linear-gradient(180deg, oklch(0.975 0.018 255) 0%, oklch(0.99 0.005 95) 30%);
   --gradient-accent: linear-gradient(140deg, oklch(0.55 0.2 264) 0%, oklch(0.62 0.19 260) 55%, oklch(0.68 0.16 256) 100%);
   --gradient-navy: linear-gradient(135deg, oklch(0.16 0.05 265) 0%, oklch(0.22 0.09 260) 60%, oklch(0.28 0.12 258) 100%);
+  /* Dashboard dark accent — same in BOTH themes (not overridden in .dark) */
+  --gradient-dash: linear-gradient(135deg, oklch(0.24 0.07 265) 0%, oklch(0.3 0.1 262) 60%, oklch(0.37 0.13 260) 100%);
   --gradient-gold: linear-gradient(135deg, oklch(0.85 0.15 88) 0%, oklch(0.78 0.17 70) 100%);
   --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-glow) 100%);
   --shadow-soft: 0 4px 20px -8px oklch(0.22 0.04 260 / 0.12);
@@ -200,6 +202,29 @@
   }
   .bg-gradient-navy {
     background-image: var(--gradient-navy);
+  }
+  .bg-gradient-dash {
+    background-image: var(--gradient-dash);
+  }
+  /* Strong navy hover for center panels. Re-scopes surface/text tokens so
+     nested cards, body text and recharts svgs stay readable on the navy bg. */
+  .dash-hover {
+    transition:
+      transform 0.5s ease,
+      box-shadow 0.3s ease;
+  }
+  .dash-hover:hover,
+  .dash-active {
+    background-image: var(--gradient-dash);
+    box-shadow: var(--shadow-elevated);
+    transform: translateY(-2px);
+    --color-card: oklch(1 0 0 / 0.06);
+    --color-muted: oklch(1 0 0 / 0.1);
+    --color-foreground: var(--color-navy-foreground);
+    --color-card-foreground: var(--color-navy-foreground);
+    --color-muted-foreground: oklch(0.98 0.005 95 / 0.62);
+    --color-border: oklch(1 0 0 / 0.12);
+    --color-input: oklch(1 0 0 / 0.14);
   }
   .bg-gradient-gold {
     background-image: var(--gradient-gold);

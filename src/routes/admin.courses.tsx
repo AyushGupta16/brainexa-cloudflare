@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DashboardLayout } from "@/components/brainexa/DashboardLayout";
+import { ADMIN_NAV as NAV } from "@/components/brainexa/dashboardNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,14 +35,6 @@ import { ChapterManager } from "@/components/brainexa/course/ChapterManager";
 export const Route = createFileRoute("/admin/courses")({
   component: AdminCourses,
 });
-
-const NAV = [
-  { to: "/admin", label: "Overview" },
-  { to: "/admin/courses", label: "Courses" },
-  { to: "/admin/teachers", label: "Teachers" },
-  { to: "/admin/referrals", label: "Referrals" },
-  { to: "/admin/withdrawals", label: "Withdrawals" },
-];
 
 const iconBtn = "h-7 w-7";
 
